@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+/// Staff accounts allowed into the admin dashboard.
+///
+/// `passwordHash` holds a bcrypt digest only — plain-text passwords are never
+/// written to the database. The seed hashes the value from ADMIN_PASSWORD.
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  role         String    @default("ADMIN")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  phone      String?
+  address    String?
+  city       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  orders     Order[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Category {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  slug          String    @unique
+  description   String?
+  imageUrl      String?   @map("image_url")
+  hoverImageUrl String?   @map("hover_image_url")
+  isVisible     Boolean   @default(true) @map("is_visible")
+  displayOrder  Int       @default(0) @map("display_order")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  products      Product[]
+
+  @@index([slug])
+  @@map("categories")
+}
+
+model Product {
+  id            String           @id @default(uuid())
+  name          String
+  slug          String           @unique
+  description   String?
+  price         Float
+  salePrice     Float?           @map("sale_price")
+  /// Delivery charge for one unit of this product, set by the admin. Charged
+  /// per unit, so an order's shipping is the sum over its lines.
+  shippingPrice Float            @default(0) @map("shipping_price")
+  categoryId    String           @map("category_id")
+  isActive      Boolean          @default(true) @map("is_active")
+  isVisible     Boolean          @default(true) @map("is_visible")
+  /// Admin intent to hide the product regardless of stock. Kept separate from
+  /// `isOutOfStock` so automatically marking a product out of stock (when its
+  /// variants hit zero) never discards a deliberate override.
+  manualOutOfStock Boolean       @default(false) @map("manual_out_of_stock")
+  /// Effective flag = manualOutOfStock OR total variant stock is 0. Recomputed
+  /// by the server whenever a variant quantity changes.
+  isOutOfStock  Boolean          @default(false) @map("is_out_of_stock")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  category      Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images        ProductImage[]
+  variants      ProductVariant[]
+  orderItems    OrderItem[]
+
+  @@index([categoryId])
+  @@index([slug])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String   @map("product_id")
+  imageUrl  String   @map("image_url")
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String   @map("product_id")
+  size      String   // e.g. S, M, L, XL
+  color     String   // e.g. #0f0f0f or Black
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, size, color])
+  @@index([productId])
+  @@map("product_variants")
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  userId         String?     @map("user_id")
+  customerName   String      @map("customer_name")
+  customerEmail  String      @map("customer_email")
+  customerPhone  String      @map("customer_phone")
+  customerCity   String      @map("customer_city")
+  customerAddress String     @map("customer_address")
+  customerPostalCode String? @map("customer_postal_code")
+  customerNotes  String?     @map("customer_notes")
+  subtotalPrice  Float       @map("subtotal_price")
+  shippingPrice  Float       @default(0) @map("shipping_price")
+  totalPrice     Float       @map("total_price")
+  status         String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+  paymentMethod  String      @default("CASH_ON_DELIVERY") @map("payment_method") // CASH_ON_DELIVERY only
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items          OrderItem[]
+
+  @@index([userId])
+  @@index([customerEmail])
+  @@map("orders")
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  orderId      String   @map("order_id")
+  productId    String?  @map("product_id")
+  productName  String   @map("product_name")
+  productImage String   @map("product_image")
+  size         String
+  color        String
+  quantity     Int
+  unitPrice    Float    @map("unit_price")
+  totalPrice   Float    @map("total_price")
+
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+/// A message sent through the public Contact / Support form.
+///
+/// Stored rather than only emailed so a support request survives an
+/// unconfigured or failing SMTP server.
+model ContactMessage {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  /// Subject line chosen by the visitor. Free text, so it is escaped on render.
+  subject   String?
+  message   String
+  /// Preferred language of the visitor (`en` / `fr` / `ar`), for a faster reply.
+  locale    String?
+  isRead    Boolean   @default(false) @map("is_read")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("contact_messages")
+}

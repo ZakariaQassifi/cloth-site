@@ -1,0 +1,326 @@
+{
+  "categories": [
+    {
+      "name": "T-Shirts",
+      "slug": "t-shirts",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Jackets",
+      "slug": "jackets",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Pants",
+      "slug": "pants",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Hoodies",
+      "slug": "hoodies",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Sneakers",
+      "slug": "sneakers",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Jeans",
+      "slug": "jeans",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    },
+    {
+      "name": "Accessories",
+      "slug": "accessories",
+      "description": null,
+      "imageUrl": null,
+      "hoverImageUrl": null,
+      "displayOrder": 0
+    }
+  ],
+  "products": [
+    {
+      "name": "Oversized Heavyweight Tee",
+      "description": "Meticulously crafted oversized heavyweight tee featuring architectural lines and premium hand-feel.",
+      "price": 65,
+      "salePrice": null,
+      "category": "T-Shirts",
+      "images": [
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#f8f8f8",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#0f0f0f",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#0f0f0f",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#f8f8f8",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Structured Wool Jacket",
+      "description": "Meticulously crafted structured wool jacket featuring architectural lines and premium hand-feel.",
+      "price": 280,
+      "salePrice": null,
+      "category": "Jackets",
+      "images": [
+        "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#2a2a2a",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#0f0f0f",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#0f0f0f",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#2a2a2a",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Relaxed Pleated Trousers",
+      "description": "Meticulously crafted relaxed pleated trousers featuring architectural lines and premium hand-feel.",
+      "price": 150,
+      "salePrice": null,
+      "category": "Pants",
+      "images": [
+        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#e0e0e0",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#2a2a2a",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#2a2a2a",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#e0e0e0",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Technical Zip Hoodie",
+      "description": "Meticulously crafted technical zip hoodie featuring architectural lines and premium hand-feel.",
+      "price": 190,
+      "salePrice": null,
+      "category": "Hoodies",
+      "images": [
+        "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#666666",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#0f0f0f",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#0f0f0f",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#666666",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Minimalist Leather Sneakers",
+      "description": "Meticulously crafted minimalist leather sneakers featuring architectural lines and premium hand-feel.",
+      "price": 220,
+      "salePrice": null,
+      "category": "Sneakers",
+      "images": [
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#0f0f0f",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#ffffff",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#ffffff",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#0f0f0f",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Raw Selvedge Denim",
+      "description": "Meticulously crafted raw selvedge denim featuring architectural lines and premium hand-feel.",
+      "price": 175,
+      "salePrice": null,
+      "category": "Jeans",
+      "images": [
+        "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#0f0f0f",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#1e293b",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#1e293b",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#0f0f0f",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Architectural Crossbody Bag",
+      "description": "Meticulously crafted architectural crossbody bag featuring architectural lines and premium hand-feel.",
+      "price": 140,
+      "salePrice": null,
+      "category": "Accessories",
+      "images": [
+        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#854d0e",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#0f0f0f",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#0f0f0f",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#854d0e",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "RESTORED Accessory (edit me)",
+      "description": "Record restored after accidental deletion during API audit. Original name/price were not recoverable - please edit in Admin > Products.",
+      "price": 99,
+      "salePrice": null,
+      "category": "Accessories",
+      "images": [
+        "http://localhost:5000/uploads/prod-1790810522926-498653035.jpg",
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800"
+      ],
+      "variants": [
+        {
+          "size": "L",
+          "color": "#0f0f0f",
+          "quantity": 8
+        },
+        {
+          "size": "M",
+          "color": "#0f0f0f",
+          "quantity": 15
+        },
+        {
+          "size": "S",
+          "color": "#0f0f0f",
+          "quantity": 10
+        },
+        {
+          "size": "XL",
+          "color": "#0f0f0f",
+          "quantity": 5
+        }
+      ]
+    }
+  ]
+}

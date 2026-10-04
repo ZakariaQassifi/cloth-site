@@ -1,0 +1,57 @@
+/**
+ * Language switcher panel.
+ *
+ * Reuses the header's existing surfaces (background, border, typography) so the
+ * addition does not alter the established visual design. Positioning uses
+ * logical properties so the panel sits on the correct side in RTL.
+ */
+
+.lang-switcher {
+  position: relative;
+  display: inline-flex;
+}
+
+.lang-switcher__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  inset-inline-end: 0;
+  min-width: 160px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 0.25rem;
+  z-index: 1000;
+}
+
+.lang-switcher__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  text-align: start;
+  transition: background-color var(--transition-fast);
+}
+
+.lang-switcher__option:hover {
+  background-color: var(--bg-secondary);
+}
+
+.lang-switcher__option.active {
+  font-weight: 600;
+}
+
+.lang-switcher__label {
+  white-space: nowrap;
+}
+
+.lang-switcher__check {
+  flex-shrink: 0;
+  color: var(--text-primary);
+}

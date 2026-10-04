@@ -1,0 +1,112 @@
+/**
+ * Right-to-left overrides.
+ *
+ * Arabic sets `dir="rtl"` on <html> (see `I18nProvider`). Most of the layout
+ * already mirrors automatically because it uses flexbox and logical flow, but a
+ * handful of rules are pinned to physical sides or use directional transforms.
+ * Those are corrected here in one place so the mirrored behaviour is easy to
+ * audit and the component stylesheets stay direction-agnostic.
+ *
+ * Only `left`/`right`/`translateX` are touched — no colours, spacing, or
+ * typography change, so the established design is preserved.
+ */
+
+[dir='rtl'] {
+  /* --- Header: nav underline and mega menu grow from the right edge --- */
+  .header__nav-link::after {
+    left: auto;
+    right: 0;
+  }
+
+  .mega-menu {
+    left: auto;
+    right: 0;
+  }
+
+  .header__cart-badge {
+    right: auto;
+    left: 6px;
+  }
+
+  /* --- Header: mobile drawer slides in from the right --- */
+  .mobile-drawer {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  .mobile-drawer.open {
+    transform: translateX(0);
+  }
+
+  .mobile-subnav {
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  /* --- Cart drawer: anchored and slid from the opposite side --- */
+  .cart-drawer {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .cart-drawer.open {
+    transform: translateX(0);
+  }
+
+  /* --- Product detail: back arrow and accordions point the other way --- */
+  .product-detail__back-icon,
+  .checkout__back-icon,
+  .admin-form-back-icon,
+  .admin-exit-icon,
+  .admin-return-icon {
+    transform: scaleX(-1);
+  }
+
+  /* --- Admin: sidebar on the right, content offset accordingly --- */
+  .admin-sidebar {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid #e5e7eb;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    margin-right: 260px;
+  }
+
+  @media (max-width: 768px) {
+    .admin-sidebar {
+      transform: translateX(100%);
+    }
+
+    .admin-sidebar.open {
+      transform: translateX(0);
+    }
+
+    .admin-main {
+      margin-right: 0;
+    }
+  }
+
+  /* --- Admin: tables read from the right --- */
+  .admin-table {
+    text-align: right;
+  }
+
+  /* --- Language switcher panel hugs the opposite corner --- */
+  .lang-switcher__menu {
+    inset-inline-end: 0;
+  }
+}
+
+/**
+ * Arabic and French both need slightly more line height than English because
+ * their glyphs sit differently on the baseline. Scoped to Arabic only so the
+ * English and French designs are untouched.
+ */
+[dir='rtl'] body {
+  line-height: 1.7;
+}
