@@ -18,6 +18,7 @@ export type Route =
   | { name: 'checkout' }
   | { name: 'order-confirmation' }
   | { name: 'wishlist' }
+  | { name: 'contact' }
   | { name: 'admin' }
   | { name: 'admin-login' }
   | { name: 'not-found' };
@@ -47,6 +48,7 @@ export function parseRoute(pathname: string): Route {
   if (path === '/checkout') return { name: 'checkout' };
   if (path === '/order-confirmation') return { name: 'order-confirmation' };
   if (path === '/wishlist') return { name: 'wishlist' };
+  if (path === '/contact') return { name: 'contact' };
   if (path === '/') return { name: 'home' };
 
   const productMatch = path.match(/^\/product\/([^/]+)$/);
@@ -79,6 +81,8 @@ export function buildPath(route: Route): string {
       return '/order-confirmation';
     case 'wishlist':
       return '/wishlist';
+    case 'contact':
+      return '/contact';
     case 'product':
       return `/product/${encodeURIComponent(route.productId)}`;
     case 'category':

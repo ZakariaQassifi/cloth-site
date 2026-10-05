@@ -266,6 +266,7 @@ const formatProduct = (product: ProductWithRelations) => {
     description: product.description ?? '',
     price: product.price,
     salePrice: product.salePrice,
+    shippingPrice: product.shippingPrice,
     isOnSale,
     categoryId: product.categoryId,
     category: product.category.name,
@@ -750,7 +751,7 @@ app.get('/api/products/:id', async (req: Request, res: Response, next: NextFunct
 
 app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, description, price, salePrice, categoryId, images, variants, isOutOfStock, isActive, isVisible } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, images, variants, isOutOfStock, isActive, isVisible } = req.body;
 
     if (!name || typeof name !== 'string' || price === undefined || !categoryId) {
       return sendResponse(res, 400, false, 'Name, price, and categoryId are required');
@@ -767,6 +768,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
 
     const numPrice = Number(price);
     const numSalePrice = salePrice !== undefined && salePrice !== '' && salePrice !== null ? Number(salePrice) : null;
+    const numShippingPrice = shippingPrice !== undefined && shippingPrice !== '' && shippingPrice !== null ? Number(shippingPrice) : 0;
 
     if (isNaN(numPrice) || numPrice <= 0) {
       return sendResponse(res, 400, false, 'Regular price must be greater than 0');
@@ -781,6 +783,10 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
       }
     }
 
+    if (isNaN(numShippingPrice) || numShippingPrice < 0) {
+      return sendResponse(res, 400, false, 'Shipping price cannot be negative');
+    }
+
     const slug = `${slugify(String(name))}-${Date.now().toString().slice(-4)}`;
 
     const product = await prisma.product.create({
@@ -790,6 +796,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
         description: description || '',
         price: numPrice,
         salePrice: numSalePrice,
+        shippingPrice: numShippingPrice,
         categoryId,
         isActive: isActive !== undefined ? Boolean(isActive) : true,
         isVisible: isVisible !== undefined ? Boolean(isVisible) : true,
@@ -827,7 +834,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
 app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const id = routeParam(req.params.id);
-    const { name, description, price, salePrice, categoryId, isActive, isVisible, isOutOfStock, images, variants } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, isActive, isVisible, isOutOfStock, images, variants } = req.body;
 
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
@@ -848,6 +855,9 @@ app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Respon
     // partial update would silently clear an existing discount.
     const numSalePrice =
       salePrice === undefined ? existing.salePrice : salePrice === '' || salePrice === null ? null : Number(salePrice);
+    // Only touch shippingPrice when the client actually sent the field.
+    const numShippingPrice =
+      shippingPrice === undefined ? existing.shippingPrice : shippingPrice === '' || shippingPrice === null ? 0 : Number(shippingPrice);
 
     if (price !== undefined && (isNaN(numPrice) || numPrice <= 0)) {
       return sendResponse(res, 400, false, 'Regular price must be greater than 0');
@@ -860,6 +870,10 @@ app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Respon
       if (numSalePrice >= numPrice) {
         return sendResponse(res, 400, false, 'Sale price must be lower than regular price');
       }
+    }
+
+    if (isNaN(numShippingPrice) || numShippingPrice < 0) {
+      return sendResponse(res, 400, false, 'Shipping price cannot be negative');
     }
 
     const updated = await prisma.$transaction(async (tx) => {
@@ -918,6 +932,7 @@ app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Respon
           ...(description !== undefined && { description }),
           ...(price !== undefined && { price: numPrice }),
           ...(salePrice !== undefined && { salePrice: numSalePrice }),
+          ...(shippingPrice !== undefined && { shippingPrice: numShippingPrice }),
           ...(categoryId && { categoryId }),
           ...(isActive !== undefined && { isActive: Boolean(isActive) }),
           ...(isVisible !== undefined && { isVisible: Boolean(isVisible) }),
@@ -1223,6 +1238,46 @@ const uploadErrorHandler: ErrorRequestHandler = (err, _req, res, next) => {
   next(err);
 };
 app.use(uploadErrorHandler);
+
+// Contact form endpoint
+app.post('/api/contact', async (req: Request, res: Response) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+
+    // Basic validation
+    if (!name || !email || !subject || !message) {
+      return sendResponse(res, 400, false, 'Missing required fields');
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return sendResponse(res, 400, false, 'Invalid email format');
+    }
+
+    if (message.length < 10) {
+      return sendResponse(res, 400, false, 'Message must be at least 10 characters');
+    }
+
+    // Store in database
+    await prisma.contactMessage.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        subject,
+        message,
+        locale: req.headers['accept-language']?.split(',')[0]?.split('-')[0] || 'en',
+      },
+    });
+
+    // TODO: Send notification email to store owner
+    // This can be implemented using the existing email infrastructure
+
+    return sendResponse(res, 201, true, 'Message sent successfully');
+  } catch (error: unknown) {
+    console.error('Contact form error:', error);
+    return sendResponse(res, 500, false, 'Failed to send message. Please try again.');
+  }
+});
 
 // Unknown /api routes must not fall through to the SPA or an HTML error page.
 app.use('/api', (req: Request, res: Response) => {

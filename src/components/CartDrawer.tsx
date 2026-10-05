@@ -12,6 +12,7 @@ export interface CartDrawerProps {
   onClose: () => void;
   lines: CartLine[];
   subtotal: number;
+  shipping: number;
   onUpdateQuantity: (cartId: string, delta: number) => void;
   onRemoveItem: (cartId: string) => void;
   onCheckout: () => void;
@@ -22,6 +23,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onClose,
   lines,
   subtotal,
+  shipping,
   onUpdateQuantity,
   onRemoveItem,
   onCheckout,
@@ -155,13 +157,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
             <div className="cart-summary-row">
               <span className="cart-summary-label">{t('common.shipping')}</span>
-              <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                {t('cart.shippingCalculated')}
+              <span style={{ fontWeight: 600 }}>
+                {shipping === 0 ? t('common.freeUpper') : formatMoney(shipping)}
               </span>
             </div>
             <div className="cart-summary-row cart-summary-row--total">
               <span className="cart-summary-label">{t('common.total')}</span>
-              <span>{formatMoney(subtotal)}</span>
+              <span>{formatMoney(subtotal + shipping)}</span>
             </div>
 
             <div className="cart-actions">

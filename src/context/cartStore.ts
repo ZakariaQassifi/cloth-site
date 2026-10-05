@@ -8,6 +8,7 @@ export interface CartContextValue {
   lines: CartLine[];
   itemCount: number;
   subtotal: number;
+  shipping: number;
   addItem: (product: Product, quantity: number, color: string, size: string) => void;
   updateQuantity: (cartId: string, delta: number) => void;
   removeItem: (cartId: string) => void;

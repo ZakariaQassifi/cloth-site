@@ -5,6 +5,7 @@ import {
   getProductDescription,
   getProductImages,
   getProductSizes,
+  getShippingPrice,
   getUnitPrice,
   getVariantStock,
   isProductOnSale,
@@ -191,6 +192,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <>{formatMoney(product.price)}</>
                 )}
               </div>
+              {getShippingPrice(product) > 0 && (
+                <div className="product-info__shipping" style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '8px' }}>
+                  + {formatMoney(getShippingPrice(product))} {t('common.shipping')} {t('common.perUnit', { defaultValue: 'per unit' })}
+                </div>
+              )}
             </div>
 
             <p className="product-info__description">{getProductDescription(product)}</p>

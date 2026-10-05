@@ -44,6 +44,7 @@ export interface AdminProduct {
   description?: string | null;
   price: number;
   salePrice?: number | null;
+  shippingPrice?: number;
   categoryId?: string;
   category: string;
   images: string[];
@@ -123,6 +124,7 @@ export interface ProductInput {
   description?: string;
   price: number;
   salePrice?: number | null;
+  shippingPrice?: number;
   categoryId: string;
   images?: string[];
   variants?: Array<{ size: string; color: string; quantity: number }>;

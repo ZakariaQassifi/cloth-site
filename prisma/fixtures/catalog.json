@@ -63,6 +63,7 @@
       "description": "Meticulously crafted oversized heavyweight tee featuring architectural lines and premium hand-feel.",
       "price": 65,
       "salePrice": null,
+      "shippingPrice": 15,
       "category": "T-Shirts",
       "images": [
         "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800",
@@ -96,6 +97,7 @@
       "description": "Meticulously crafted structured wool jacket featuring architectural lines and premium hand-feel.",
       "price": 280,
       "salePrice": null,
+      "shippingPrice": 25,
       "category": "Jackets",
       "images": [
         "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=800",
@@ -129,6 +131,7 @@
       "description": "Meticulously crafted relaxed pleated trousers featuring architectural lines and premium hand-feel.",
       "price": 150,
       "salePrice": null,
+      "shippingPrice": 15,
       "category": "Pants",
       "images": [
         "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=800",
@@ -162,6 +165,7 @@
       "description": "Meticulously crafted technical zip hoodie featuring architectural lines and premium hand-feel.",
       "price": 190,
       "salePrice": null,
+      "shippingPrice": 20,
       "category": "Hoodies",
       "images": [
         "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=800",
@@ -195,6 +199,7 @@
       "description": "Meticulously crafted minimalist leather sneakers featuring architectural lines and premium hand-feel.",
       "price": 220,
       "salePrice": null,
+      "shippingPrice": 25,
       "category": "Sneakers",
       "images": [
         "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=800",
@@ -228,6 +233,7 @@
       "description": "Meticulously crafted raw selvedge denim featuring architectural lines and premium hand-feel.",
       "price": 175,
       "salePrice": null,
+      "shippingPrice": 20,
       "category": "Jeans",
       "images": [
         "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=800",
@@ -261,6 +267,7 @@
       "description": "Meticulously crafted architectural crossbody bag featuring architectural lines and premium hand-feel.",
       "price": 140,
       "salePrice": null,
+      "shippingPrice": 15,
       "category": "Accessories",
       "images": [
         "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800",
@@ -294,6 +301,7 @@
       "description": "Record restored after accidental deletion during API audit. Original name/price were not recoverable - please edit in Admin > Products.",
       "price": 99,
       "salePrice": null,
+      "shippingPrice": 15,
       "category": "Accessories",
       "images": [
         "http://localhost:5000/uploads/prod-1790810522926-498653035.jpg",

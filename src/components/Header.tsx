@@ -13,6 +13,7 @@ export interface HeaderProps {
   onWishlistClick?: () => void;
   onSelectCategory?: (category: string) => void;
   onSelectSpecialFilter?: (filter: 'sale' | 'new' | 'all') => void;
+  onContactClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
   onWishlistClick,
   onSelectCategory,
   onSelectSpecialFilter,
+  onContactClick,
 }) => {
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -108,6 +110,10 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="header__nav-item">
               <a href="#" className="header__nav-link" onClick={(e) => handleSpecialClick('sale', e)} style={{ color: '#e11d48' }}>{t('nav.sale')}</a>
             </div>
+
+            <div className="header__nav-item">
+              <a href="#" className="header__nav-link" onClick={(e) => { e.preventDefault(); onContactClick?.(); }}>{t('nav.contact')}</a>
+            </div>
           </nav>
 
           {/* Right: Actions */}
@@ -180,9 +186,15 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
             ))}
 
-            <li className="mobile-nav-item" style={{ borderBottom: 'none' }}>
+            <li className="mobile-nav-item">
               <a href="#" className="mobile-nav-link" style={{ color: '#e11d48' }} onClick={(e) => handleSpecialClick('sale', e)}>
                 {t('nav.sale')}
+              </a>
+            </li>
+
+            <li className="mobile-nav-item" style={{ borderBottom: 'none' }}>
+              <a href="#" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); onContactClick?.(); setMobileMenuOpen(false); }}>
+                {t('nav.contact')}
               </a>
             </li>
           </ul>

@@ -37,6 +37,7 @@ interface FixtureProduct {
   description: string;
   price: number;
   salePrice: number | null;
+  shippingPrice: number;
   category: string;
   images: string[];
   variants: FixtureVariant[];
@@ -120,6 +121,7 @@ async function main() {
         description: product.description,
         price: product.price,
         salePrice: product.salePrice,
+        shippingPrice: product.shippingPrice,
         categoryId: categoryIds.get(product.category) ?? Array.from(categoryIds.values())[0],
         isActive: true,
         isVisible: true,

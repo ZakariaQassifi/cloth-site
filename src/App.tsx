@@ -8,6 +8,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutPage } from './components/CheckoutPage';
 import { OrderConfirmationPage } from './components/OrderConfirmationPage';
 import { WishlistPage } from './components/WishlistPage';
+import { ContactPage } from './components/ContactPage';
 import { AdminLayout } from './admin/AdminLayout';
 import { useCart } from './context/useCart';
 import { useCatalog } from './context/useCatalog';
@@ -24,7 +25,7 @@ export function App() {
   const { t } = useTranslation();
   const route = useRoute();
   const { products, categories, findCategory, loadProducts } = useCatalog();
-  const { lines, itemCount, subtotal, addItem, updateQuantity, removeItem, clearCart } = useCart();
+  const { lines, itemCount, subtotal, shipping, addItem, updateQuantity, removeItem, clearCart } = useCart();
   const {
     entries: wishlistEntries,
     count: wishlistCount,
@@ -143,6 +144,7 @@ export function App() {
         onWishlistClick={() => navigate('/wishlist')}
         onSelectCategory={goToCollection}
         onSelectSpecialFilter={goToSpecial}
+        onContactClick={() => navigate('/contact')}
       />
       <main>
         {route.name === 'order-confirmation' && latestOrder ? (
@@ -182,6 +184,8 @@ export function App() {
             onAddToCart={handleAddToCart}
             onSelectProduct={openProduct}
           />
+        ) : route.name === 'contact' ? (
+          <ContactPage />
         ) : isProductView && selectedProduct ? (
           <ProductDetailPage
             key={selectedProduct.id}
@@ -303,6 +307,7 @@ export function App() {
         onClose={() => setIsCartOpen(false)}
         lines={lines}
         subtotal={subtotal}
+        shipping={shipping}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeItem}
         onCheckout={() => {

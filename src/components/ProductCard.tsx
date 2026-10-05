@@ -3,6 +3,7 @@ import {
   getDiscountPercent,
   getPrimaryImage,
   getProductImages,
+  getShippingPrice,
   getUnitPrice,
   isProductOnSale,
   isProductOutOfStock,
@@ -24,6 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
   const isOnSale = isProductOnSale(product);
   const discountPercent = getDiscountPercent(product);
   const isOutOfStock = isProductOutOfStock(product);
+  const shippingPrice = getShippingPrice(product);
 
   return (
     <div
@@ -70,6 +72,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
               <span className="product-card__price">{formatMoney(product.price)}</span>
             )}
           </div>
+          {shippingPrice > 0 && (
+            <div className="product-card__shipping" style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '4px' }}>
+              + {formatMoney(shippingPrice)} {t('common.shipping')}
+            </div>
+          )}
           {product.colors && product.colors.length > 0 && (
             <div className="product-card__colors">
               {product.colors.map((color, index) => (

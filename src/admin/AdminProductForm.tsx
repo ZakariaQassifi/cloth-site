@@ -32,6 +32,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
   const [categoryId, setCategoryId] = useState(productToEdit?.categoryId || (categories[0]?.id ?? ''));
   const [price, setPrice] = useState(productToEdit?.price ? String(productToEdit.price) : '');
   const [salePrice, setSalePrice] = useState(productToEdit?.salePrice ? String(productToEdit.salePrice) : '');
+  const [shippingPrice, setShippingPrice] = useState(productToEdit?.shippingPrice ? String(productToEdit.shippingPrice) : '');
   const [images, setImages] = useState<string[]>(productToEdit?.images || ['https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800']);
   const [newImageUrl, setNewImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -132,6 +133,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
 
   const numPrice = parseFloat(price) || 0;
   const numSale = salePrice !== '' ? parseFloat(salePrice) : null;
+  const numShipping = shippingPrice !== '' ? parseFloat(shippingPrice) : 0;
   const discountPercent = numSale !== null && numPrice > 0 && numSale < numPrice
     ? Math.round(((numPrice - numSale) / numPrice) * 100)
     : null;
@@ -162,6 +164,10 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
         return;
       }
     }
+    if (isNaN(numShipping) || numShipping < 0) {
+      setError(t('admin.form.errShippingNegative'));
+      return;
+    }
     if (selectedSizes.length === 0 || selectedColors.length === 0) {
       setError(t('admin.form.errSelectVariants'));
       return;
@@ -182,6 +188,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
       description,
       price: numPrice,
       salePrice: numSale,
+      shippingPrice: numShipping,
       categoryId,
       images,
       variants: variantsPayload,
@@ -273,7 +280,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
         {/* Pricing & Discounts */}
         <div className="admin-form-section">
           <h3 className="admin-form-title">{t('admin.form.sectionPricing')}</h3>
-          <div className="form-grid form-grid--2col">
+          <div className="form-grid form-grid--3col">
             <div className="form-group">
               <label className="form-label" htmlFor="prodPrice">{t('admin.form.regularPrice')}</label>
               <input
@@ -297,6 +304,19 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
                 value={salePrice}
                 onChange={(e) => setSalePrice(e.target.value)}
                 placeholder="210"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="prodShipping">{t('admin.form.shippingPrice')}</label>
+              <input
+                type="number"
+                id="prodShipping"
+                className="form-input"
+                value={shippingPrice}
+                onChange={(e) => setShippingPrice(e.target.value)}
+                placeholder="0"
                 min="0"
                 step="0.01"
               />
