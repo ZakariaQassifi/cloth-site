@@ -32,4 +32,3 @@ prisma/*.db-journal
 # .env.example is committed as the template; the real .env never is.
 .env
 .env.*
-!.env.example
