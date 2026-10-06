@@ -4,7 +4,7 @@
  * frontend between local, staging and production without touching any code.
  */
 
-const DEFAULT_API_BASE_URL = 'http://localhost:5000/api';
+const DEFAULT_API_BASE_URL = '/api';
 
 function trimTrailingSlash(value: string): string {
   return value.endsWith('/') ? value.slice(0, -1) : value;

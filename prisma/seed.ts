@@ -74,37 +74,61 @@ function loadCatalog(): CatalogFixture {
 }
 
 async function main() {
-  console.log('Starting database seeding...');
-  const catalog = loadCatalog();
+  const force = process.argv.includes('--force');
+  console.log(`Starting database seed check (force=${force})...`);
 
-  // Order matters: children before parents, because foreign keys restrict deletes.
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.productVariant.deleteMany();
-  await prisma.productImage.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.user.deleteMany();
+  // Staff account for the dashboard. Stored as a bcrypt digest, never plain text.
+  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: ADMIN_EMAIL } });
+  const passwordHash = await hashPassword(ADMIN_PASSWORD);
+  if (existingAdmin) {
+    console.log(`Admin account exists: ${ADMIN_EMAIL}`);
+  } else {
+    await prisma.adminUser.create({
+      data: { email: ADMIN_EMAIL, passwordHash, name: ADMIN_NAME },
+    });
+    console.log(`Created initial admin account: ${ADMIN_EMAIL}`);
+  }
+
+  const existingCount = await prisma.product.count();
+  if (existingCount > 0 && !force) {
+    console.log(
+      `Database already contains ${existingCount} products. Skipping catalog re-seeding to preserve data.`
+    );
+    return;
+  }
+
+  if (force) {
+    console.warn('⚠️  Force re-seed requested. Clearing catalog tables (preserving users and orders)...');
+    await prisma.productVariant.deleteMany();
+    await prisma.productImage.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.category.deleteMany();
+  }
+
+  console.log('Seeding catalog from fixtures...');
+  const catalog = loadCatalog();
 
   const categoryIds = new Map<string, string>();
   for (const category of catalog.categories) {
-    const created = await prisma.category.create({
-      data: {
-        name: category.name,
-        slug: category.slug || slugify(category.name),
-        description: category.description,
-        imageUrl: category.imageUrl,
-        hoverImageUrl: category.hoverImageUrl,
-        displayOrder: category.displayOrder,
-      },
-    });
-    categoryIds.set(created.name, created.id);
+    const slug = category.slug || slugify(category.name);
+    let categoryRecord = await prisma.category.findUnique({ where: { slug } });
+    if (!categoryRecord) {
+      categoryRecord = await prisma.category.create({
+        data: {
+          name: category.name,
+          slug,
+          description: category.description,
+          imageUrl: category.imageUrl,
+          hoverImageUrl: category.hoverImageUrl,
+          displayOrder: category.displayOrder,
+        },
+      });
+    }
+    categoryIds.set(category.name, categoryRecord.id);
   }
-  console.log(`Created ${categoryIds.size} categories`);
+  console.log(`Categories ready (${categoryIds.size})`);
 
   for (const product of catalog.products) {
-    // The unique (productId, size, color) index rejects duplicate variants, so
-    // collapse any repeats in the fixture before writing.
     const variantMap = new Map<string, FixtureVariant>();
     for (const variant of product.variants) {
       const key = `${variant.size}::${variant.color}`;
@@ -137,23 +161,7 @@ async function main() {
     console.log(`Created product: ${created.name} (${variantMap.size} variants)`);
   }
 
-  // Staff account for the dashboard. Stored as a bcrypt digest, never plain text.
-  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: ADMIN_EMAIL } });
-  const passwordHash = await hashPassword(ADMIN_PASSWORD);
-  if (existingAdmin) {
-    await prisma.adminUser.update({
-      where: { email: ADMIN_EMAIL },
-      data: { passwordHash, name: ADMIN_NAME },
-    });
-    console.log(`Updated admin account: ${ADMIN_EMAIL}`);
-  } else {
-    await prisma.adminUser.create({
-      data: { email: ADMIN_EMAIL, passwordHash, name: ADMIN_NAME },
-    });
-    console.log(`Created admin account: ${ADMIN_EMAIL}`);
-  }
-
-  console.log(`Seeding completed: ${catalog.products.length} products.`);
+  console.log(`Seeding completed: ${catalog.products.length} products processed.`);
 }
 
 main()

@@ -11,10 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+.kilo
 
 # Local database and uploaded images
 prisma/*.db
 prisma/*.db-journal
+prisma/*.db-wal
+prisma/*.db-shm
 /uploads
 
 # Editor directories and files
