@@ -11,7 +11,7 @@ import {
 } from './shared/adminAuthMessages';
 import { warnIfUnconfigured } from './server/emailConfig';
 import { assertSigningSecretIsSafe } from './server/adminAuth';
-import { configureSqlite, prisma } from './server/db';
+import { configureDatabase, prisma } from './server/db';
 import { hashPassword } from './server/adminPassword';
 import {
   authenticateAdmin,
@@ -227,7 +227,7 @@ app.post('/api/admin/logout', requireAdmin, (_req: Request, res: Response) => {
 const distPath = path.join(process.cwd(), 'dist');
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
-  app.get('*', (req: Request, res: Response, next: NextFunction) => {
+  app.get(/.*/, (req: Request, res: Response, next: NextFunction) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
       return next();
     }
@@ -240,7 +240,7 @@ if (fs.existsSync(distPath)) {
 // ----------------------------------------------------
 async function startServer() {
   try {
-    await configureSqlite();
+    await configureDatabase();
     assertSigningSecretIsSafe();
     warnIfUnconfigured();
 

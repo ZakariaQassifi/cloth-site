@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "prisma generate && prisma db push && prisma db seed && tsc -b && vite build",
+    "build": "prisma generate && tsc -b && vite build",
+    "build:db": "prisma migrate deploy && prisma db seed",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "tsx server.ts",
-    "db:migrate": "prisma migrate dev --name init",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:migrate": "prisma migrate dev --name init --schema=./prisma/schema.dev.prisma",
+    "db:seed": "prisma db seed --schema=./prisma/schema.dev.prisma",
+    "db:studio": "prisma studio --schema=./prisma/schema.dev.prisma",
+    "start": "tsx server.ts",
+    "prisma:dev": "prisma --schema=./prisma/schema.dev.prisma"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

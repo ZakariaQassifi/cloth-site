@@ -1,8 +1,11 @@
 {
   "build": {
-    "builder": "RAILPACK"
+    "builder": "RAILPACK",
+    "buildCommand": "npm run build"
   },
   "deploy": {
-    "startCommand": "npx serve -s dist"
+    "startCommand": "npm run build:db && npm run start",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 100
   }
 }
