@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "prisma generate && tsc -b && vite build",
-    "build:db": "prisma db push && npx tsx scripts/createAdmin.ts && prisma db seed",
+    "build:db": "prisma db push && prisma db seed",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "tsx server.ts",
