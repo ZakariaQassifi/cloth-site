@@ -3,7 +3,7 @@
  *
  * Reads the catalog snapshot in `prisma/fixtures/catalog.json` and rebuilds the
  * database from it. The seed is intentionally self-contained: it never imports
- * frontend modules, so the storefront and the database cannot drift apart.
+ * storefront modules, so the storefront and the database cannot drift apart.
  *
  * Usage: npm run db:seed   (destructive — replaces all catalog data)
  */
@@ -22,7 +22,7 @@ const prisma = new PrismaClient();
  * set ADMIN_EMAIL and ADMIN_PASSWORD before seeding any shared database. The
  * password is hashed here and only the digest is stored.
  */
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@kinetic.com').toLowerCase();
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@kinetic.com').trim().toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Store Administrator';
 
@@ -77,17 +77,25 @@ async function main() {
   const force = process.argv.includes('--force');
   console.log(`Starting database seed check (force=${force})...`);
 
-  // Staff account for the dashboard. Stored as a bcrypt digest, never plain text.
-  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: ADMIN_EMAIL } });
+  // Force creation or updating of the Admin account with the fresh password hash
   const passwordHash = await hashPassword(ADMIN_PASSWORD);
-  if (existingAdmin) {
-    console.log(`Admin account exists: ${ADMIN_EMAIL}`);
-  } else {
-    await prisma.adminUser.create({
-      data: { email: ADMIN_EMAIL, passwordHash, name: ADMIN_NAME },
-    });
-    console.log(`Created initial admin account: ${ADMIN_EMAIL}`);
-  }
+  
+  const admin = await prisma.adminUser.upsert({
+    where: { email: ADMIN_EMAIL },
+    update: {
+      passwordHash,
+      name: ADMIN_NAME,
+      role: 'ADMIN',
+    },
+    create: {
+      email: ADMIN_EMAIL,
+      passwordHash,
+      name: ADMIN_NAME,
+      role: 'ADMIN',
+    },
+  });
+
+  console.log(`✅ Admin account configured/updated: ${admin.email}`);
 
   const existingCount = await prisma.product.count();
   if (existingCount > 0 && !force) {
@@ -133,15 +141,20 @@ async function main() {
     for (const variant of product.variants) {
       const key = `${variant.size}::${variant.color}`;
       const existing = variantMap.get(key);
-      variantMap.set(key, existing
-        ? { ...variant, quantity: existing.quantity + Number(variant.quantity || 0) }
-        : { ...variant, quantity: Number(variant.quantity) || 0 });
+      variantMap.set(
+        key,
+        existing
+          ? { ...variant, quantity: existing.quantity + Number(variant.quantity || 0) }
+          : { ...variant, quantity: Number(variant.quantity) || 0 }
+      );
     }
 
     const created = await prisma.product.create({
       data: {
         name: product.name,
-        slug: `${slugify(product.name)}-${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 90 + 10)}`,
+        slug: `${slugify(product.name)}-${Date.now().toString().slice(-4)}-${Math.floor(
+          Math.random() * 90 + 10
+        )}`,
         description: product.description,
         price: product.price,
         salePrice: product.salePrice,

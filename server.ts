@@ -340,6 +340,9 @@ const sendResponse = (
 // ----------------------------------------------------
 // HEALTH CHECK
 // ----------------------------------------------------
+// ----------------------------------------------------
+// HEALTH CHECK
+// ----------------------------------------------------
 app.get('/api/health', async (_req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -347,8 +350,14 @@ app.get('/api/health', async (_req: Request, res: Response) => {
       database: 'connected',
       uptimeSeconds: Math.round(process.uptime()),
     });
+  } catch (error: unknown) {
+    return sendResponse(res, 503, false, errorMessage(error, 'Database unreachable'));
+  }
+});
 
-// Setup admin emergency endpoint for deployments
+// ----------------------------------------------------
+// SETUP ADMIN ENDPOINT (FORCE RESET / INITIAL SEED)
+// ----------------------------------------------------
 app.get('/api/setup-admin', async (_req: Request, res: Response) => {
   try {
     const email = (process.env.ADMIN_EMAIL || 'admin@kinetic.com').trim().toLowerCase();
@@ -357,7 +366,11 @@ app.get('/api/setup-admin', async (_req: Request, res: Response) => {
 
     const admin = await prisma.adminUser.upsert({
       where: { email },
-      update: { passwordHash },
+      update: { 
+        passwordHash,
+        name: 'Admin',
+        role: 'ADMIN',
+      },
       create: {
         email,
         name: 'Admin',
@@ -368,13 +381,11 @@ app.get('/api/setup-admin', async (_req: Request, res: Response) => {
 
     return sendResponse(res, 200, true, 'Admin account configured successfully!', {
       email: admin.email,
+      role: admin.role,
+      passwordUsed: password,
     });
   } catch (error: unknown) {
     return sendResponse(res, 500, false, errorMessage(error, 'Failed to setup admin account'));
-  }
-});
-  } catch (error: unknown) {
-    return sendResponse(res, 503, false, errorMessage(error, 'Database unreachable'));
   }
 });
 
