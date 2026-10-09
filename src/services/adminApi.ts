@@ -32,7 +32,9 @@ async function adminRequest<T>(
   path: string,
   options: Parameters<typeof request<T>>[1] = {}
 ): Promise<ApiResult<T>> {
-  const result = await request<T>(path, { ...options, headers: adminAuthHeader() });
+  // Zid /api prefix ila ma-kanch
+  const fullPath = path.startsWith('/api') ? path : `/api${path.startsWith('/') ? path : `/${path}`}`;
+  const result = await request<T>(fullPath, { ...options, headers: adminAuthHeader() });
   if (isSessionRejection(result.message)) clearAdminSession();
   return result;
 }
@@ -144,7 +146,8 @@ export function adminLogin(
   email: string,
   password: string
 ): Promise<ApiResult<AdminLoginResponse>> {
-  return request<AdminLoginResponse>('/admin/login', {
+  // ✅ FIX: Zidna /api/ f l-path
+  return request<AdminLoginResponse>('/api/admin/login', {
     method: 'POST',
     body: { email, password },
   });
@@ -152,14 +155,14 @@ export function adminLogin(
 
 /** Confirms a stored token is still valid; used on dashboard load and refresh. */
 export function adminSession(): Promise<ApiResult<{ admin: AdminProfile | null }>> {
-  return adminRequest<{ admin: AdminProfile | null }>('/admin/me');
+  return adminRequest<{ admin: AdminProfile | null }>('/api/admin/me');
 }
 
 /** Notifies the API of sign-out. The client discards the token either way. */
 export async function adminLogout(): Promise<ApiResult<null>> {
-  return adminRequest<null>('/admin/logout', { method: 'POST' });
+  return adminRequest<null>('/api/admin/logout', { method: 'POST' });
 }
 
 export function adminUploadImages(files: File[]): Promise<ApiResult<string[]>> {
-  return uploadFiles('/upload', files, 'images', adminAuthHeader());
+  return uploadFiles('/api/upload', files, 'images', adminAuthHeader());
 }
