@@ -13,7 +13,8 @@ export async function fetchProducts(filters: ProductQuery = {}): Promise<ApiResu
   const query: ProductQuery = { ...filters };
   if (query.category === 'All') delete query.category;
 
-  const result = await request<unknown[] | Record<string, unknown>[]>('/products', { query });
+  // ✅ FIX: Zidna /api/ f l-path
+  const result = await request<unknown[] | Record<string, unknown>[]>('/api/products', { query });
   if (!result.success) return { success: false, message: result.message };
 
   const rows = Array.isArray(result.data) ? result.data : [];
@@ -25,7 +26,8 @@ export async function fetchProducts(filters: ProductQuery = {}): Promise<ApiResu
 }
 
 export async function fetchProductById(id: string): Promise<ApiResult<Product>> {
-  const result = await request<Record<string, unknown>>(`/products/${id}`);
+  // ✅ FIX: Zidna /api/ f l-path
+  const result = await request<Record<string, unknown>>(`/api/products/${id}`);
   if (!result.success || !result.data) return { success: false, message: result.message || 'Product not found' };
 
   const raw = result.data as Partial<Product> & { id: string; name: string };
@@ -34,7 +36,8 @@ export async function fetchProductById(id: string): Promise<ApiResult<Product>> 
 
 /** Visible categories, ordered for navigation. */
 export async function fetchCategories(): Promise<ApiResult<Category[]>> {
-  const result = await request<Category[]>('/categories');
+  // ✅ FIX: Zidna /api/ f l-path
+  const result = await request<Category[]>('/api/categories');
   if (!result.success || !Array.isArray(result.data)) {
     return { success: false, message: result.message || 'Categories unavailable' };
   }
