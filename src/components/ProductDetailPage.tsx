@@ -71,6 +71,54 @@ function pickAvailableVariant(
   return { size: inStock.size, color: inStock.color };
 }
 
+/** Parse and format product details JSON string into HTML. */
+function formatDetails(details: string): string {
+  try {
+    const parsed = JSON.parse(details);
+    if (Array.isArray(parsed)) {
+      return `<ul>${parsed.map((item: string) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+    }
+    if (typeof parsed === 'object' && parsed !== null) {
+      return Object.entries(parsed)
+        .map(([key, value]) => `<p><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(value))}</p>`)
+        .join('');
+    }
+  } catch {
+    // If not valid JSON, treat as plain text with line breaks
+  }
+  return details.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
+}
+
+/** Parse and format shipping info JSON string into HTML. */
+function formatShippingInfo(shippingInfo: string): string {
+  try {
+    const parsed = JSON.parse(shippingInfo);
+    if (Array.isArray(parsed)) {
+      return `<ul>${parsed.map((item: string) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+    }
+    if (typeof parsed === 'object' && parsed !== null) {
+      return Object.entries(parsed)
+        .map(([key, value]) => `<p><strong>${escapeHtml(key)}:</strong> ${escapeHtml(String(value))}</p>`)
+        .join('');
+    }
+  } catch {
+    // If not valid JSON, treat as plain text with line breaks
+  }
+  return shippingInfo.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
+}
+
+/** Escape HTML to prevent XSS. */
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&',
+    '<': '<',
+    '>': '>',
+    '"': '"',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char] || char);
+}
+
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product,
   onBack,
@@ -318,13 +366,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
                 {openAccordion === 'details' && (
                   <div className="accordion-content">
-                    <p>{t('detail.detailsDescription')}</p>
-                    <ul>
-                      <li>{t('detail.material1')}</li>
-                      <li>{t('detail.material2')}</li>
-                      <li>{t('detail.material3')}</li>
-                      <li>{t('detail.material4')}</li>
-                    </ul>
+                    {product.details ? (
+                      <div dangerouslySetInnerHTML={{ __html: formatDetails(product.details) }} />
+                    ) : (
+                      <>
+                        <p>{t('detail.detailsDescription')}</p>
+                        <ul>
+                          <li>{t('detail.material1')}</li>
+                          <li>{t('detail.material2')}</li>
+                          <li>{t('detail.material3')}</li>
+                          <li>{t('detail.material4')}</li>
+                        </ul>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -340,7 +394,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
                 {openAccordion === 'shipping' && (
                   <div className="accordion-content">
-                    <p>{t('detail.shippingDescription')}</p>
+                    {product.shippingInfo ? (
+                      <div dangerouslySetInnerHTML={{ __html: formatShippingInfo(product.shippingInfo) }} />
+                    ) : (
+                      <p>{t('detail.shippingDescription')}</p>
+                    )}
                   </div>
                 )}
               </div>

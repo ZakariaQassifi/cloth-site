@@ -76,6 +76,10 @@ model Product {
   isOutOfStock  Boolean          @default(false) @map("is_out_of_stock")
   /// Hover image URL for product card hover effect
   hoverImageUrl String?          @map("hover_image_url")
+  /// Product details (materials, care instructions) — stored as JSON string
+  details       String?          @map("details")
+  /// Shipping & returns info per product — stored as JSON string
+  shippingInfo  String?          @map("shipping_info")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @updatedAt @map("updated_at")
 
@@ -184,4 +188,38 @@ model ContactMessage {
   @@index([isRead])
   @@index([createdAt])
   @@map("contact_messages")
+}
+
+/// Global site configuration (single-row settings store).
+model SiteSettings {
+  id            String    @id @default("default")
+  /// Store name displayed in header/footer
+  storeName     String    @default("KINETIC STUDIO") @map("store_name")
+  /// Copyright text in footer
+  copyrightText String?   @default("© 2026 KINETIC STUDIO. All rights reserved.") @map("copyright_text")
+  /// Contact email displayed in footer/contact page
+  contactEmail  String?   @map("contact_email")
+  /// Contact phone displayed in footer
+  contactPhone  String?   @map("contact_phone")
+  /// Contact address displayed in footer
+  contactAddress String?  @map("contact_address")
+  /// Social media links stored as JSON
+  socialLinks   String?   @map("social_links")
+  /// Footer navigation links stored as JSON
+  footerLinks   String?   @map("footer_links")
+  /// Meta title for SEO
+  metaTitle     String?   @map("meta_title")
+  /// Meta description for SEO
+  metaDescription String? @map("meta_description")
+  /// Meta keywords for SEO
+  metaKeywords  String?   @map("meta_keywords")
+  /// Google Analytics / tracking ID
+  trackingId    String?   @map("tracking_id")
+  /// Custom CSS/JS for advanced customization
+  customCss     String?   @map("custom_css")
+  customJs      String?   @map("custom_js")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("site_settings")
 }

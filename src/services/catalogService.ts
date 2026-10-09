@@ -5,7 +5,7 @@
  */
 
 import { normalizeProduct, type Product } from '../data/products';
-import type { ApiResult, Category, ProductQuery } from '../types/api';
+import type { ApiResult, Category, ProductQuery, SiteSettings } from '../types/api';
 import { request } from './apiClient';
 
 /** Fetch products, normalised into the app's canonical `Product` shape. */
@@ -47,4 +47,14 @@ export async function fetchCategories(): Promise<ApiResult<Category[]>> {
     .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
   return { success: true, message: result.message, data: visible };
+}
+
+/** Fetch global site settings for footer, SEO, etc. */
+export async function fetchSettings(): Promise<ApiResult<SiteSettings>> {
+  // ✅ FIX: Zidna /api/ f l-path
+  const result = await request<SiteSettings>('/api/settings');
+  if (!result.success || !result.data) {
+    return { success: false, message: result.message || 'Settings unavailable' };
+  }
+  return { success: true, message: result.message, data: result.data };
 }

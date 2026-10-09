@@ -9,6 +9,7 @@ import { CheckoutPage } from './components/CheckoutPage';
 import { OrderConfirmationPage } from './components/OrderConfirmationPage';
 import { WishlistPage } from './components/WishlistPage';
 import { ContactPage } from './components/ContactPage';
+import { Footer } from './components/Footer';
 import { AdminLayout } from './admin/AdminLayout';
 import { useCart } from './context/useCart';
 import { useCatalog } from './context/useCatalog';
@@ -295,12 +296,7 @@ export function App() {
         )}
       </main>
 
-      {/* Clean Footer */}
-      <footer style={{ borderTop: '1px solid var(--border-primary)', padding: '2rem 0', textAlign: 'center', backgroundColor: 'var(--bg-secondary)' }}>
-        <Container maxWidth="lg">
-          <span className="text-caption">{t('home.footerRights')}</span>
-        </Container>
-      </footer>
+      <Footer />
 
       <CartDrawer
         isOpen={isCartOpen}

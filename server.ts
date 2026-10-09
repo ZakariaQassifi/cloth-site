@@ -242,6 +242,8 @@ const formatProduct = (product: ProductWithRelations) => {
     categorySlug: product.category.slug,
     images: images.length > 0 ? images : [FALLBACK_IMAGE],
     hoverImageUrl: product.hoverImageUrl ?? null,
+    details: product.details ?? null,
+    shippingInfo: product.shippingInfo ?? null,
     sizes,
     colors,
     stock,
@@ -646,6 +648,120 @@ app.delete('/api/categories/:id', requireAdmin, async (req: AdminRequest, res: R
 });
 
 // ----------------------------------------------------
+// SETTINGS API
+// ----------------------------------------------------
+
+/** Helper to parse JSON string fields safely. */
+function parseJsonField<T>(value: string | null | undefined, fallback: T): T {
+  if (!value) return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Helper to stringify JSON fields safely. */
+function stringifyJsonField<T>(value: T | null | undefined): string | null {
+  if (value === null || value === undefined) return null;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return null;
+  }
+}
+
+app.get('/api/settings', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    let settings = await prisma.siteSettings.findUnique({ where: { id: 'default' } });
+
+    // Create default settings if none exist
+    if (!settings) {
+      settings = await prisma.siteSettings.create({
+        data: { id: 'default' },
+      });
+    }
+
+    // Parse JSON fields for the response
+    const response = {
+      ...settings,
+      socialLinks: parseJsonField<string[]>(settings.socialLinks, []),
+      footerLinks: parseJsonField<Array<{ label: string; href: string }>>(settings.footerLinks, []),
+    };
+
+    return sendResponse(res, 200, true, 'Settings fetched successfully', response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const {
+      storeName,
+      copyrightText,
+      contactEmail,
+      contactPhone,
+      contactAddress,
+      socialLinks,
+      footerLinks,
+      metaTitle,
+      metaDescription,
+      metaKeywords,
+      trackingId,
+      customCss,
+      customJs,
+    } = req.body;
+
+    const settings = await prisma.siteSettings.upsert({
+      where: { id: 'default' },
+      create: {
+        id: 'default',
+        storeName: storeName || 'KINETIC STUDIO',
+        copyrightText: copyrightText || '© 2026 KINETIC STUDIO. All rights reserved.',
+        contactEmail,
+        contactPhone,
+        contactAddress,
+        socialLinks: stringifyJsonField(socialLinks),
+        footerLinks: stringifyJsonField(footerLinks),
+        metaTitle,
+        metaDescription,
+        metaKeywords,
+        trackingId,
+        customCss,
+        customJs,
+      },
+      update: {
+        ...(storeName !== undefined && { storeName }),
+        ...(copyrightText !== undefined && { copyrightText }),
+        ...(contactEmail !== undefined && { contactEmail }),
+        ...(contactPhone !== undefined && { contactPhone }),
+        ...(contactAddress !== undefined && { contactAddress }),
+        ...(socialLinks !== undefined && { socialLinks: stringifyJsonField(socialLinks) }),
+        ...(footerLinks !== undefined && { footerLinks: stringifyJsonField(footerLinks) }),
+        ...(metaTitle !== undefined && { metaTitle }),
+        ...(metaDescription !== undefined && { metaDescription }),
+        ...(metaKeywords !== undefined && { metaKeywords }),
+        ...(trackingId !== undefined && { trackingId }),
+        ...(customCss !== undefined && { customCss }),
+        ...(customJs !== undefined && { customJs }),
+      },
+    });
+
+    // Parse JSON fields for the response
+    const response = {
+      ...settings,
+      socialLinks: parseJsonField<string[]>(settings.socialLinks, []),
+      footerLinks: parseJsonField<Array<{ label: string; href: string }>>(settings.footerLinks, []),
+    };
+
+    return sendResponse(res, 200, true, 'Settings updated successfully', response);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ----------------------------------------------------
 // PRODUCTS API & FILTERING
 // ----------------------------------------------------
 
@@ -758,7 +874,7 @@ app.get('/api/products/:id', async (req: Request, res: Response, next: NextFunct
 
 app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, description, price, salePrice, shippingPrice, categoryId, images, hoverImageUrl, variants, isOutOfStock, isActive, isVisible } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, images, hoverImageUrl, details, shippingInfo, variants, isOutOfStock, isActive, isVisible } = req.body;
 
     if (!name || typeof name !== 'string' || price === undefined || !categoryId) {
       return sendResponse(res, 400, false, 'Name, price, and categoryId are required');
@@ -812,6 +928,8 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
         manualOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
         isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
         hoverImageUrl: hoverImageUrl || null,
+        details: details || null,
+        shippingInfo: shippingInfo || null,
         images: {
           create: images && Array.isArray(images) && images.length > 0
             ? images.map((url: string, index: number) => ({
@@ -842,7 +960,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
 app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const id = routeParam(req.params.id);
-    const { name, description, price, salePrice, shippingPrice, categoryId, isActive, isVisible, isOutOfStock, images, hoverImageUrl, variants } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, isActive, isVisible, isOutOfStock, images, hoverImageUrl, details, shippingInfo, variants } = req.body;
 
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
@@ -947,6 +1065,8 @@ app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Respon
           // The manual switch is stored separately; the effective flag is derived.
           ...(isOutOfStock !== undefined && { manualOutOfStock: Boolean(isOutOfStock) }),
           ...(hoverImageUrl !== undefined && { hoverImageUrl: hoverImageUrl || null }),
+          ...(details !== undefined && { details: details || null }),
+          ...(shippingInfo !== undefined && { shippingInfo: shippingInfo || null }),
         },
         include: { images: true, variants: true, category: true },
       });

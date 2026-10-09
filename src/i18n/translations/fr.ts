@@ -517,15 +517,90 @@ export const fr: Dictionary = {
   'admin.form.errUploadFailed':
     'Échec du téléversement de l’image. Veuillez réessayer.',
 
+  // Product Details & Shipping Info
+  'admin.form.detailsTitle': 'Détails du produit et instructions d\'entretien',
+  'admin.form.detailsDescription': 'Entrez un tableau JSON de chaînes ou du texte brut (un élément par ligne). Exemple : ["100 % coton biologique", "Lavage en machine à froid", "Fabriqué au Portugal"]',
+  'admin.form.detailsLabel': 'Détails (JSON ou texte brut)',
+  'admin.form.detailsPlaceholder': '["Matériau 1", "Matériau 2", "Instruction d\'entretien 1"]',
+  'admin.form.shippingInfoTitle': 'Informations livraison et retours',
+  'admin.form.shippingInfoDescription': 'Entrez un tableau JSON de chaînes ou du texte brut (un élément par ligne). Laissez vide pour utiliser les paramètres par défaut de la boutique.',
+  'admin.form.shippingInfoLabel': 'Infos livraison & retours (JSON ou texte brut)',
+  'admin.form.shippingInfoPlaceholder': '["Livraison offerte dès 150 €", "Retours gratuits sous 30 jours", "Expédié sous 1-2 jours ouvrés"]',
+
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'Gestion des clients',
   'admin.customers.desc':
     'Espace réservé au suivi des comptes clients et de leur historique.',
-  'admin.settings.title': 'Paramètres de la boutique',
-  'admin.settings.desc':
-    'Espace réservé à la configuration et aux préférences de la boutique.',
+  'admin.settings.title': 'Paramètres du site',
+  'admin.settings.desc': 'Configurez les paramètres globaux de la boutique, le pied de page, le SEO et l\'analyse.',
+  'admin.settings.loadFailed': 'Échec du chargement des paramètres',
+  'admin.settings.error': 'Erreur :',
+  'admin.settings.success': 'Succès :',
+  'admin.settings.saving': 'Enregistrement…',
+  'admin.settings.save': 'Enregistrer les paramètres',
+  'admin.settings.saveSuccess': 'Paramètres enregistrés avec succès',
+  'admin.settings.saveFailed': 'Échec de l\'enregistrement des paramètres',
+
+  // Settings: General
+  'admin.settings.generalTitle': 'Paramètres généraux',
+  'admin.settings.storeName': 'Nom de la boutique',
+  'admin.settings.storeNamePlaceholder': 'ex. KINETIC STUDIO',
+  'admin.settings.copyrightText': 'Texte de copyright',
+  'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. Tous droits réservés.',
+
+  // Settings: Contact
+  'admin.settings.contactTitle': 'Informations de contact',
+  'admin.settings.contactEmail': 'E-mail de contact',
+  'admin.settings.contactEmailPlaceholder': 'support@votreboutique.com',
+  'admin.settings.contactPhone': 'Téléphone de contact',
+  'admin.settings.contactPhonePlaceholder': '+33 1 23 45 67 89',
+  'admin.settings.contactAddress': 'Adresse de contact',
+  'admin.settings.contactAddressPlaceholder': '123 Rue de la Boutique, Ville, Pays',
+
+  // Settings: Social
+  'admin.settings.socialTitle': 'Liens vers les réseaux sociaux',
+  'admin.settings.socialDescription': 'Ajoutez des liens vers vos profils de réseaux sociaux. Laissez l\'URL vide pour masquer.',
+  'admin.settings.selectPlatform': 'Sélectionner la plateforme',
+  'admin.settings.addSocialLink': 'Ajouter un lien social',
+  'admin.settings.removeSocialLink': 'Supprimer le lien social',
+
+  // Settings: Footer Links
+  'admin.settings.footerLinksTitle': 'Liens de navigation du pied de page',
+  'admin.settings.footerLinksDescription': 'Gérez les liens de navigation affichés dans le pied de page.',
+  'admin.settings.footerLinkLabelPlaceholder': 'Libellé du lien (ex. Accueil)',
+  'admin.settings.footerLinkHrefPlaceholder': 'URL du lien (ex. /)',
+  'admin.settings.addFooterLink': 'Ajouter un lien de pied de page',
+  'admin.settings.removeFooterLink': 'Supprimer le lien de pied de page',
+
+  // Settings: SEO
+  'admin.settings.seoTitle': 'Paramètres SEO',
+  'admin.settings.metaTitle': 'Meta Title',
+  'admin.settings.metaTitlePlaceholder': 'Votre Boutique - Les Meilleurs Produits en Ligne',
+  'admin.settings.metaDescription': 'Meta Description',
+  'admin.settings.metaDescriptionPlaceholder': 'Découvrez des produits incroyables à des prix imbattables...',
+  'admin.settings.metaKeywords': 'Meta Keywords',
+  'admin.settings.metaKeywordsPlaceholder': 'boutique, mode, vêtements, accessoires',
+
+  // Settings: Analytics
+  'admin.settings.analyticsTitle': 'Analytique et suivi',
+  'admin.settings.trackingId': 'ID de suivi (Google Analytics, etc.)',
+  'admin.settings.trackingIdPlaceholder': 'G-XXXXXXXXXX',
+
+  // Settings: Custom Code
+  'admin.settings.customCodeTitle': 'Code personnalisé',
+  'admin.settings.customCodeDescription': 'Ajoutez du CSS ou JavaScript personnalisé. À utiliser avec précaution.',
+  'admin.settings.customCss': 'CSS personnalisé',
+  'admin.settings.customCssPlaceholder': '/* Styles personnalisés ici */',
+  'admin.settings.customJs': 'JavaScript personnalisé',
+  'admin.settings.customJsPlaceholder': '// Scripts personnalisés ici',
+
   'admin.deleteProductFailed': 'Échec de la suppression du produit',
   'admin.updateVisibilityFailed': 'Échec de la mise à jour de la visibilité',
   'admin.updateStatusFailed':
     'Échec de la mise à jour du statut de la commande',
+
+  // Footer
+  'footer.navigation': 'Navigation',
+  'footer.contact': 'Contact',
+  'footer.followUs': 'Suivez-nous',
 };

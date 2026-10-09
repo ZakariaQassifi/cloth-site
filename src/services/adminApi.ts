@@ -11,6 +11,8 @@ import type {
   Category,
   CategoryInput,
   ProductInput,
+  SiteSettings,
+  SiteSettingsInput,
 } from '../types/api';
 import { request, uploadFiles } from './apiClient';
 import { adminAuthHeader, clearAdminSession, type AdminProfile } from '../admin/adminAuth';
@@ -165,4 +167,13 @@ export async function adminLogout(): Promise<ApiResult<null>> {
 
 export function adminUploadImages(files: File[]): Promise<ApiResult<string[]>> {
   return uploadFiles('/api/upload', files, 'images', adminAuthHeader());
+}
+
+export async function adminFetchSettings(): Promise<ApiResult<SiteSettings>> {
+  const result = await adminRequest<SiteSettings>('/settings');
+  return result;
+}
+
+export function adminUpdateSettings(input: SiteSettingsInput): Promise<ApiResult<SiteSettings>> {
+  return adminRequest<SiteSettings>('/admin/settings', { method: 'PUT', body: input });
 }

@@ -49,6 +49,8 @@ export interface AdminProduct {
   category: string;
   images: string[];
   hoverImageUrl?: string | null;
+  details?: string | null;
+  shippingInfo?: string | null;
   colors?: string[];
   sizes?: string[];
   variants: Array<{ id?: string; size: string; color: string; quantity: number }>;
@@ -129,6 +131,8 @@ export interface ProductInput {
   categoryId: string;
   images?: string[];
   hoverImageUrl?: string | null;
+  details?: string | null;
+  shippingInfo?: string | null;
   variants?: Array<{ size: string; color: string; quantity: number }>;
   isOutOfStock?: boolean;
   isActive?: boolean;
@@ -143,6 +147,43 @@ export interface CategoryInput {
   hoverImageUrl?: string | null;
   isVisible?: boolean;
   displayOrder?: number;
+}
+
+/** Global site settings as consumed by the storefront and admin. */
+export interface SiteSettings {
+  id: string;
+  storeName: string;
+  copyrightText?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  contactAddress?: string | null;
+  socialLinks?: string | null;
+  footerLinks?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  trackingId?: string | null;
+  customCss?: string | null;
+  customJs?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/** Input for updating site settings. */
+export interface SiteSettingsInput {
+  storeName?: string;
+  copyrightText?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  contactAddress?: string | null;
+  socialLinks?: string | null;
+  footerLinks?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  trackingId?: string | null;
+  customCss?: string | null;
+  customJs?: string | null;
 }
 
 /** Normalises a rejected response into a readable message. */

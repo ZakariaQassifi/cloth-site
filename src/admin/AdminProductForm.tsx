@@ -35,6 +35,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
   const [shippingPrice, setShippingPrice] = useState(productToEdit?.shippingPrice ? String(productToEdit.shippingPrice) : '');
   const [images, setImages] = useState<string[]>(productToEdit?.images || ['https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800']);
   const [hoverImageUrl, setHoverImageUrl] = useState(productToEdit?.hoverImageUrl || '');
+  const [details, setDetails] = useState(productToEdit?.details || '');
+  const [shippingInfo, setShippingInfo] = useState(productToEdit?.shippingInfo || '');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -197,6 +199,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
       categoryId,
       images,
       hoverImageUrl: hoverImageUrl || null,
+      details: details || null,
+      shippingInfo: shippingInfo || null,
       variants: variantsPayload,
       isOutOfStock,
       isActive,
@@ -483,6 +487,44 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
               value={hoverImageUrl}
               onChange={(e) => setHoverImageUrl(e.target.value)}
               placeholder={t('admin.form.pasteExternalUrl')}
+            />
+          </div>
+        </div>
+
+        {/* Product Details (Materials, Care Instructions) */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.form.detailsTitle')}</h3>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            {t('admin.form.detailsDescription')}
+          </p>
+          <div className="form-group">
+            <label className="form-label" htmlFor="details">{t('admin.form.detailsLabel')}</label>
+            <textarea
+              id="details"
+              className="form-input"
+              style={{ height: '150px', padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              placeholder={t('admin.form.detailsPlaceholder')}
+            />
+          </div>
+        </div>
+
+        {/* Shipping & Returns Info */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.form.shippingInfoTitle')}</h3>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            {t('admin.form.shippingInfoDescription')}
+          </p>
+          <div className="form-group">
+            <label className="form-label" htmlFor="shippingInfo">{t('admin.form.shippingInfoLabel')}</label>
+            <textarea
+              id="shippingInfo"
+              className="form-input"
+              style={{ height: '150px', padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}
+              value={shippingInfo}
+              onChange={(e) => setShippingInfo(e.target.value)}
+              placeholder={t('admin.form.shippingInfoPlaceholder')}
             />
           </div>
         </div>

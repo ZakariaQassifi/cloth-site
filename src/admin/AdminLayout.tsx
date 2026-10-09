@@ -16,6 +16,7 @@ import { AdminCategories } from './AdminCategories';
 import { AdminOrders } from './AdminOrders';
 import { AdminOrderDetailsModal } from './AdminOrderDetailsModal';
 import { AdminLogin } from './AdminLogin';
+import { AdminSettings } from './AdminSettings';
 import { clearAdminSession, useAdminToken } from './adminAuth';
 import { ADMIN_LOGIN_PATH, navigate } from '../routing/routes';
 import type { AdminOrder, AdminProduct, AdminStats, OrderStatus } from '../types/api';
@@ -395,10 +396,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
                 </div>
               )}
               {activeTab === 'settings' && (
-                <div className="admin-card" style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
-                  <h3>{t('admin.settings.title')}</h3>
-                  <p>{t('admin.settings.desc')}</p>
-                </div>
+                <AdminSettings onRefresh={applyStats} />
               )}
             </>
           )}

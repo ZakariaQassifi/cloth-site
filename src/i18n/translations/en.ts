@@ -502,14 +502,90 @@ export const en = {
   'admin.form.errFileTooLarge': 'File size exceeds the maximum limit of 5MB.',
   'admin.form.errUploadFailed': 'Image upload failed. Please try again.',
 
+  // Product Details & Shipping Info
+  'admin.form.detailsTitle': 'Product Details & Care Instructions',
+  'admin.form.detailsDescription': 'Enter as JSON array of strings or plain text (one item per line). Example: ["100% Organic Cotton", "Machine wash cold", "Made in Portugal"]',
+  'admin.form.detailsLabel': 'Details (JSON or plain text)',
+  'admin.form.detailsPlaceholder': '["Material 1", "Material 2", "Care instruction 1"]',
+  'admin.form.shippingInfoTitle': 'Shipping & Returns Information',
+  'admin.form.shippingInfoDescription': 'Enter as JSON array of strings or plain text (one item per line). Leave empty to use store defaults.',
+  'admin.form.shippingInfoLabel': 'Shipping & Returns Info (JSON or plain text)',
+  'admin.form.shippingInfoPlaceholder': '["Free shipping over $150", "30-day free returns", "Ships within 1-2 business days"]',
+
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'Customers Management',
   'admin.customers.desc': 'Customer accounts and history overview placeholder.',
-  'admin.settings.title': 'Store Settings',
-  'admin.settings.desc': 'Store configuration and preferences placeholder.',
+  'admin.settings.title': 'Site Settings',
+  'admin.settings.desc': 'Configure global store settings, footer, SEO, and analytics.',
+  'admin.settings.loadFailed': 'Failed to load settings',
+  'admin.settings.error': 'Error:',
+  'admin.settings.success': 'Success:',
+  'admin.settings.saving': 'Saving…',
+  'admin.settings.save': 'Save Settings',
+  'admin.settings.saveSuccess': 'Settings saved successfully',
+  'admin.settings.saveFailed': 'Failed to save settings',
+
+  // Settings: General
+  'admin.settings.generalTitle': 'General Settings',
+  'admin.settings.storeName': 'Store Name',
+  'admin.settings.storeNamePlaceholder': 'e.g. KINETIC STUDIO',
+  'admin.settings.copyrightText': 'Copyright Text',
+  'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. All rights reserved.',
+
+  // Settings: Contact
+  'admin.settings.contactTitle': 'Contact Information',
+  'admin.settings.contactEmail': 'Contact Email',
+  'admin.settings.contactEmailPlaceholder': 'support@yourstore.com',
+  'admin.settings.contactPhone': 'Contact Phone',
+  'admin.settings.contactPhonePlaceholder': '+1 (555) 000-0000',
+  'admin.settings.contactAddress': 'Contact Address',
+  'admin.settings.contactAddressPlaceholder': '123 Store St, City, Country',
+
+  // Settings: Social
+  'admin.settings.socialTitle': 'Social Media Links',
+  'admin.settings.socialDescription': 'Add links to your social media profiles. Leave URL empty to hide.',
+  'admin.settings.selectPlatform': 'Select platform',
+  'admin.settings.addSocialLink': 'Add Social Link',
+  'admin.settings.removeSocialLink': 'Remove social link',
+
+  // Settings: Footer Links
+  'admin.settings.footerLinksTitle': 'Footer Navigation Links',
+  'admin.settings.footerLinksDescription': 'Manage the navigation links displayed in the footer.',
+  'admin.settings.footerLinkLabelPlaceholder': 'Link label (e.g. Home)',
+  'admin.settings.footerLinkHrefPlaceholder': 'Link URL (e.g. /)',
+  'admin.settings.addFooterLink': 'Add Footer Link',
+  'admin.settings.removeFooterLink': 'Remove footer link',
+
+  // Settings: SEO
+  'admin.settings.seoTitle': 'SEO Settings',
+  'admin.settings.metaTitle': 'Meta Title',
+  'admin.settings.metaTitlePlaceholder': 'Your Store - Best Products Online',
+  'admin.settings.metaDescription': 'Meta Description',
+  'admin.settings.metaDescriptionPlaceholder': 'Discover amazing products at great prices...',
+  'admin.settings.metaKeywords': 'Meta Keywords',
+  'admin.settings.metaKeywordsPlaceholder': 'shop, fashion, clothing, accessories',
+
+  // Settings: Analytics
+  'admin.settings.analyticsTitle': 'Analytics & Tracking',
+  'admin.settings.trackingId': 'Tracking ID (Google Analytics, etc.)',
+  'admin.settings.trackingIdPlaceholder': 'G-XXXXXXXXXX',
+
+  // Settings: Custom Code
+  'admin.settings.customCodeTitle': 'Custom Code',
+  'admin.settings.customCodeDescription': 'Add custom CSS or JavaScript. Use with caution.',
+  'admin.settings.customCss': 'Custom CSS',
+  'admin.settings.customCssPlaceholder': '/* Custom styles here */',
+  'admin.settings.customJs': 'Custom JavaScript',
+  'admin.settings.customJsPlaceholder': '// Custom scripts here',
+
   'admin.deleteProductFailed': 'Failed to delete product',
   'admin.updateVisibilityFailed': 'Failed to update visibility',
   'admin.updateStatusFailed': 'Failed to update order status',
+
+  // Footer
+  'footer.navigation': 'Navigation',
+  'footer.contact': 'Contact',
+  'footer.followUs': 'Follow Us',
 } as const;
 
 export type TranslationKey = keyof typeof en;

@@ -503,12 +503,88 @@ export const ar: Dictionary = {
   'admin.form.errFileTooLarge': 'حجم الملف يتجاوز الحد الأقصى 5 ميغابايت.',
   'admin.form.errUploadFailed': 'فشل رفع الصورة. يرجى المحاولة مرة أخرى.',
 
+  // Product Details & Shipping Info
+  'admin.form.detailsTitle': 'تفاصيل المنتج وتعليمات العناية',
+  'admin.form.detailsDescription': 'أدخل كمصفوفة JSON من السلاسل أو نص عادي (عنصر واحد في كل سطر). مثال: ["100٪ قطن عضوي", "غسيل آلي بالماء البارد", "صنع في البرتغال"]',
+  'admin.form.detailsLabel': 'التفاصيل (JSON أو نص عادي)',
+  'admin.form.detailsPlaceholder': '["خامة 1", "خامة 2", "تعليمات عناية 1"]',
+  'admin.form.shippingInfoTitle': 'معلومات الشحن والإرجاع',
+  'admin.form.shippingInfoDescription': 'أدخل كمصفوفة JSON من السلاسل أو نص عادي (عنصر واحد في كل سطر). اتركه فارغاً لاستخدام إعدادات المتجر الافتراضية.',
+  'admin.form.shippingInfoLabel': 'معلومات الشحن والإرجاع (JSON أو نص عادي)',
+  'admin.form.shippingInfoPlaceholder': '["شحن مجاني للطلبات فوق 150 $", "إرجاع مجاني خلال 30 يوماً", "يتم الشحن خلال 1-2 يوم عمل"]',
+
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'إدارة العملاء',
   'admin.customers.desc': 'مساحة مخصصة لنظرة عامة على حسابات العملاء وسجلهم.',
-  'admin.settings.title': 'إعدادات المتجر',
-  'admin.settings.desc': 'مساحة مخصصة لإعداد المتجر وتفضيلاته.',
+  'admin.settings.title': 'إعدادات الموقع',
+  'admin.settings.desc': 'قم بتكوين إعدادات المتجر العالمية، تذييل الصفحة، تحسين محركات البحث، والتحليلات.',
+  'admin.settings.loadFailed': 'فشل تحميل الإعدادات',
+  'admin.settings.error': 'خطأ:',
+  'admin.settings.success': 'نجاح:',
+  'admin.settings.saving': 'جارٍ الحفظ…',
+  'admin.settings.save': 'حفظ الإعدادات',
+  'admin.settings.saveSuccess': 'تم حفظ الإعدادات بنجاح',
+  'admin.settings.saveFailed': 'فشل حفظ الإعدادات',
+
+  // Settings: General
+  'admin.settings.generalTitle': 'الإعدادات العامة',
+  'admin.settings.storeName': 'اسم المتجر',
+  'admin.settings.storeNamePlaceholder': 'مثال: KINETIC STUDIO',
+  'admin.settings.copyrightText': 'نص حقوق النشر',
+  'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. جميع الحقوق محفوظة.',
+
+  // Settings: Contact
+  'admin.settings.contactTitle': 'معلومات الاتصال',
+  'admin.settings.contactEmail': 'بريد الاتصال الإلكتروني',
+  'admin.settings.contactEmailPlaceholder': 'support@yourstore.com',
+  'admin.settings.contactPhone': 'هاتف الاتصال',
+  'admin.settings.contactPhonePlaceholder': '+966 50 000 0000',
+  'admin.settings.contactAddress': 'عنوان الاتصال',
+  'admin.settings.contactAddressPlaceholder': '123 شارع المتجر، المدينة، البلد',
+
+  // Settings: Social
+  'admin.settings.socialTitle': 'روابط وسائل التواصل الاجتماعي',
+  'admin.settings.socialDescription': 'أضف روابط لملفاتك الشخصية على وسائل التواصل الاجتماعي. اترك الرابط فارغاً لإخفائه.',
+  'admin.settings.selectPlatform': 'اختر المنصة',
+  'admin.settings.addSocialLink': 'إضافة رابط اجتماعي',
+  'admin.settings.removeSocialLink': 'إزالة الرابط الاجتماعي',
+
+  // Settings: Footer Links
+  'admin.settings.footerLinksTitle': 'روابط التنقل في التذييل',
+  'admin.settings.footerLinksDescription': 'إدارة روابط التنقل المعروضة في التذييل.',
+  'admin.settings.footerLinkLabelPlaceholder': 'عنوان الرابط (مثال: الرئيسية)',
+  'admin.settings.footerLinkHrefPlaceholder': 'رابط URL (مثال: /)',
+  'admin.settings.addFooterLink': 'إضافة رابط تذييل',
+  'admin.settings.removeFooterLink': 'إزالة رابط التذييل',
+
+  // Settings: SEO
+  'admin.settings.seoTitle': 'إعدادات السيو (SEO)',
+  'admin.settings.metaTitle': 'عنوان الميتا (Meta Title)',
+  'admin.settings.metaTitlePlaceholder': 'متجرك - أفضل المنتجات أونلاين',
+  'admin.settings.metaDescription': 'وصف الميتا (Meta Description)',
+  'admin.settings.metaDescriptionPlaceholder': 'اكتشف منتجات رائعة بأسعار ممتازة...',
+  'admin.settings.metaKeywords': 'كلمات مفتاحية للميتا',
+  'admin.settings.metaKeywordsPlaceholder': 'متجر، أزياء، ملابس، إكسسوارات',
+
+  // Settings: Analytics
+  'admin.settings.analyticsTitle': 'التحليلات والتتبع',
+  'admin.settings.trackingId': 'معرف التتبع (Google Analytics، إلخ)',
+  'admin.settings.trackingIdPlaceholder': 'G-XXXXXXXXXX',
+
+  // Settings: Custom Code
+  'admin.settings.customCodeTitle': 'كود مخصص',
+  'admin.settings.customCodeDescription': 'أضف CSS أو JavaScript مخصص. استخدم بحذر.',
+  'admin.settings.customCss': 'CSS مخصص',
+  'admin.settings.customCssPlaceholder': '/* أنماط مخصصة هنا */',
+  'admin.settings.customJs': 'JavaScript مخصص',
+  'admin.settings.customJsPlaceholder': '// نصوص مخصصة هنا',
+
   'admin.deleteProductFailed': 'تعذر حذف المنتج',
   'admin.updateVisibilityFailed': 'تعذر تحديث الظهور',
   'admin.updateStatusFailed': 'تعذر تحديث حالة الطلب',
+
+  // Footer
+  'footer.navigation': 'التنقل',
+  'footer.contact': 'اتصل بنا',
+  'footer.followUs': 'تابعنا',
 };
