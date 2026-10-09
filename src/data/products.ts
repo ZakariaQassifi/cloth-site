@@ -27,6 +27,7 @@ export interface Product {
    */
   shippingPrice?: number | null;
   images: string[];
+  hoverImageUrl?: string | null;
   category: string;
   categoryId?: string;
   /** Distinct sizes offered for this product. */

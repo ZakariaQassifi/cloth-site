@@ -74,6 +74,8 @@ model Product {
   /// Effective flag = manualOutOfStock OR total variant stock is 0. Recomputed
   /// by the server whenever a variant quantity changes.
   isOutOfStock  Boolean          @default(false) @map("is_out_of_stock")
+  /// Hover image URL for product card hover effect
+  hoverImageUrl String?          @map("hover_image_url")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @updatedAt @map("updated_at")
 

@@ -241,6 +241,7 @@ const formatProduct = (product: ProductWithRelations) => {
     category: product.category.name,
     categorySlug: product.category.slug,
     images: images.length > 0 ? images : [FALLBACK_IMAGE],
+    hoverImageUrl: product.hoverImageUrl ?? null,
     sizes,
     colors,
     stock,
@@ -757,7 +758,7 @@ app.get('/api/products/:id', async (req: Request, res: Response, next: NextFunct
 
 app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, description, price, salePrice, shippingPrice, categoryId, images, variants, isOutOfStock, isActive, isVisible } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, images, hoverImageUrl, variants, isOutOfStock, isActive, isVisible } = req.body;
 
     if (!name || typeof name !== 'string' || price === undefined || !categoryId) {
       return sendResponse(res, 400, false, 'Name, price, and categoryId are required');
@@ -810,6 +811,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
         // from the variant quantities that are created alongside the product.
         manualOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
         isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
+        hoverImageUrl: hoverImageUrl || null,
         images: {
           create: images && Array.isArray(images) && images.length > 0
             ? images.map((url: string, index: number) => ({
@@ -840,7 +842,7 @@ app.post('/api/products', requireAdmin, async (req: AdminRequest, res: Response,
 app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const id = routeParam(req.params.id);
-    const { name, description, price, salePrice, shippingPrice, categoryId, isActive, isVisible, isOutOfStock, images, variants } = req.body;
+    const { name, description, price, salePrice, shippingPrice, categoryId, isActive, isVisible, isOutOfStock, images, hoverImageUrl, variants } = req.body;
 
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
@@ -944,6 +946,7 @@ app.put('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Respon
           ...(isVisible !== undefined && { isVisible: Boolean(isVisible) }),
           // The manual switch is stored separately; the effective flag is derived.
           ...(isOutOfStock !== undefined && { manualOutOfStock: Boolean(isOutOfStock) }),
+          ...(hoverImageUrl !== undefined && { hoverImageUrl: hoverImageUrl || null }),
         },
         include: { images: true, variants: true, category: true },
       });

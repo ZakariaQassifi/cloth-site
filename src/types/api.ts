@@ -48,6 +48,7 @@ export interface AdminProduct {
   categoryId?: string;
   category: string;
   images: string[];
+  hoverImageUrl?: string | null;
   colors?: string[];
   sizes?: string[];
   variants: Array<{ id?: string; size: string; color: string; quantity: number }>;
@@ -127,6 +128,7 @@ export interface ProductInput {
   shippingPrice?: number;
   categoryId: string;
   images?: string[];
+  hoverImageUrl?: string | null;
   variants?: Array<{ size: string; color: string; quantity: number }>;
   isOutOfStock?: boolean;
   isActive?: boolean;

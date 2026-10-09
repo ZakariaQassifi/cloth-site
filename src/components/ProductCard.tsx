@@ -26,6 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
   const discountPercent = getDiscountPercent(product);
   const isOutOfStock = isProductOutOfStock(product);
   const shippingPrice = getShippingPrice(product);
+  const hoverImage = product.hoverImageUrl ?? images[1];
 
   return (
     <div
@@ -39,9 +40,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
           className="product-card__img product-card__img--primary"
           loading="lazy"
         />
-        {images[1] && (
+        {hoverImage && (
           <img
-            src={images[1]}
+            src={hoverImage}
             alt={t('product.alternateView', { name: product.name })}
             className="product-card__img product-card__img--secondary"
             loading="lazy"

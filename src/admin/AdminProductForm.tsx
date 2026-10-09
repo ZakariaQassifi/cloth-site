@@ -34,6 +34,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
   const [salePrice, setSalePrice] = useState(productToEdit?.salePrice ? String(productToEdit.salePrice) : '');
   const [shippingPrice, setShippingPrice] = useState(productToEdit?.shippingPrice ? String(productToEdit.shippingPrice) : '');
   const [images, setImages] = useState<string[]>(productToEdit?.images || ['https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800']);
+  const [hoverImageUrl, setHoverImageUrl] = useState(productToEdit?.hoverImageUrl || '');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -79,7 +80,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
     );
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'main' | 'hover' = 'main') => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -104,7 +105,11 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
     setUploading(false);
 
     if (res.success && res.data) {
-      setImages([...images, ...res.data]);
+      if (type === 'main') {
+        setImages([...images, ...res.data]);
+      } else {
+        setHoverImageUrl(res.data[0]);
+      }
     } else {
       setUploadError(res.message || t('admin.form.errUploadFailed'));
     }
@@ -191,6 +196,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
       shippingPrice: numShipping,
       categoryId,
       images,
+      hoverImageUrl: hoverImageUrl || null,
       variants: variantsPayload,
       isOutOfStock,
       isActive,
@@ -421,6 +427,63 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Hover Image */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.form.hoverImage')}</h3>
+          
+          {/* Hover Image Preview */}
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ width: '100%', maxWidth: '300px', aspectRatio: '3 / 4', border: '2px dashed #d1d5db', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#f9fafb', position: 'relative' }}>
+              {hoverImageUrl ? (
+                <img src={hoverImageUrl} alt={t('admin.form.hoverPreviewAlt')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', gap: '0.5rem' }}>
+                  <Upload size={32} />
+                  <span style={{ fontSize: '0.875rem' }}>{t('admin.form.noHoverImage')}</span>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setHoverImageUrl('')}
+                style={{ position: 'absolute', top: 6, right: 6, background: '#fee2e2', border: 'none', color: '#991b1b', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                aria-label={t('admin.form.removeHoverImage')}
+                disabled={!hoverImageUrl}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Hover Image Upload Box */}
+          <div style={{ border: '2px dashed #d1d5db', borderRadius: '8px', padding: '2rem', textAlign: 'center', backgroundColor: '#f9fafb', position: 'relative' }}>
+            <Upload size={32} style={{ margin: '0 auto 0.75rem auto', color: '#6b7280' }} />
+            <h4 style={{ fontSize: '0.9375rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+              {uploading ? t('admin.form.uploadingImages') : t('admin.form.dropHoverImage')}
+            </h4>
+            <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '1rem' }}>
+              {t('admin.form.supportsFormats')}
+            </p>
+            <input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={(e) => handleFileChange(e, 'hover')}
+              disabled={uploading}
+              style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
+            />
+          </div>
+
+          {/* Fallback URL input for hover image */}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <input
+              type="url"
+              className="form-input"
+              value={hoverImageUrl}
+              onChange={(e) => setHoverImageUrl(e.target.value)}
+              placeholder={t('admin.form.pasteExternalUrl')}
+            />
           </div>
         </div>
 
