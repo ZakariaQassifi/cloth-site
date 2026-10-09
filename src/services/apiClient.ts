@@ -59,7 +59,12 @@ export async function request<T>(
   options: RequestOptions = {}
 ): Promise<ApiResult<T>> {
   const { method = 'GET', query, body, signal, headers } = options;
-  const url = `${API_BASE_URL}${path}${query ? buildQueryString(query) : ''}`;
+
+  // ✅ Ensure all relative paths include /api/ prefix
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const normalizedPath = cleanPath.startsWith('/api') ? cleanPath : `/api${cleanPath}`;
+
+  const url = `${API_BASE_URL}${normalizedPath}${query ? buildQueryString(query) : ''}`;
 
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -118,8 +123,11 @@ export async function uploadFiles(
   const formData = new FormData();
   files.forEach((file) => formData.append(fieldName, file));
 
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const normalizedPath = cleanPath.startsWith('/api') ? cleanPath : `/api${cleanPath}`;
+
   try {
-    const response = await fetch(`${API_BASE_URL}${path}`, {
+    const response = await fetch(`${API_BASE_URL}${normalizedPath}`, {
       method: 'POST',
       // No Content-Type here: the browser must set the multipart boundary.
       ...(Object.keys(headers).length > 0 && { headers }),
