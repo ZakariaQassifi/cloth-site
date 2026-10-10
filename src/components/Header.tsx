@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, User, Heart, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
+import { User, Heart, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
 import { fetchCategories, fetchSettings } from '../services/catalogService';
 import { useTranslation } from '../i18n/useI18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
@@ -37,8 +37,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const categoriesRef = useRef<HTMLDivElement>(null);
 
   const loadCategories = useCallback(async () => {
@@ -102,15 +100,6 @@ export const Header: React.FC<HeaderProps> = ({
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
-
-  const handleMobileSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onSelectSpecialFilter?.('all'); // Navigate to search results page
-      setMobileSearchOpen(false);
-      setMobileMenuOpen(false);
-    }
-  };
 
   const renderBrand = () => {
     if (logoUrl) {
@@ -204,10 +193,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </nav>
 
-          {/* Right: Actions - Mobile: Language Switcher + Cart | Desktop: All actions */}
+          {/* Right: Actions - Mobile: Language Switcher + Cart | Desktop: Language Switcher, Wishlist, Cart */}
           <div className="header__actions">
             <LanguageSwitcher />
-            {/* Mobile Cart - always visible */}
+            {/* Cart - always visible */}
             <button
               type="button"
               className="header__action-btn header__action-btn--cart"
@@ -219,12 +208,6 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             {/* Desktop-only actions */}
             <div className="header__actions--desktop">
-              <button type="button" className="header__action-btn" aria-label={t('nav.search')}>
-                <Search size={20} />
-              </button>
-              <button type="button" className="header__action-btn" aria-label={t('nav.account')}>
-                <User size={20} />
-              </button>
               <button
                 type="button"
                 className="header__action-btn"
@@ -237,15 +220,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="header__cart-badge">{wishlistCount}</span>
                 )}
               </button>
-              <button
-                type="button"
-                className="header__action-btn"
-                aria-label={t('nav.shoppingBag')}
-                onClick={onCartClick}
-              >
-                <ShoppingBag size={20} />
-                {cartCount > 0 && <span className="header__cart-badge">{cartCount}</span>}
-              </button>
             </div>
           </div>
         </div>
@@ -256,7 +230,6 @@ export const Header: React.FC<HeaderProps> = ({
         className={`mobile-overlay ${mobileMenuOpen ? 'open' : ''}`}
         onClick={() => {
           setMobileMenuOpen(false);
-          setMobileSearchOpen(false);
         }}
       />
 
@@ -269,7 +242,6 @@ export const Header: React.FC<HeaderProps> = ({
             className="header__action-btn"
             onClick={() => {
               setMobileMenuOpen(false);
-              setMobileSearchOpen(false);
             }}
             aria-label={t('nav.closeMenu')}
           >
@@ -278,40 +250,6 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="mobile-drawer__body">
-          {/* Mobile Search Bar */}
-          <div className={`mobile-search ${mobileSearchOpen ? 'open' : ''}`}>
-            <form onSubmit={handleMobileSearchSubmit} className="mobile-search__form">
-              <Search size={20} className="mobile-search__icon" />
-              <input
-                type="search"
-                className="mobile-search__input"
-                placeholder={t('nav.search')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setMobileSearchOpen(true)}
-                autoComplete="off"
-              />
-              <button
-                type="button"
-                className="mobile-search__close"
-                onClick={() => {
-                  setSearchQuery('');
-                  setMobileSearchOpen(false);
-                }}
-                aria-label="Clear search"
-              >
-                <X size={18} />
-              </button>
-            </form>
-            <button
-              type="button"
-              className="mobile-search__toggle"
-              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-            >
-              {mobileSearchOpen ? <X size={20} /> : <Search size={20} />}
-            </button>
-          </div>
-
           <ul className="mobile-nav-list">
             <li className="mobile-nav-item">
               <a href="#" className="mobile-nav-link" onClick={(e) => handleSpecialClick('new', e)}>
