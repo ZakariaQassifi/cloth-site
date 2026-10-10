@@ -4,11 +4,11 @@ import {
   changeCartLineQuantity,
   createCartLine,
   getCartItemCount,
-  getCartSubtotal,
   removeCartLine,
   reviveCartLines,
   type CartLine,
 } from '../data/cart';
+import { buildOrderLines, calculateTotals, type OrderLine, type ShippingConfig } from '../data/order';
 import type { Product } from '../data/products';
 import { CartContext, type CartContextValue } from './cartStore';
 import { fetchSettings } from '../services/catalogService';
@@ -54,7 +54,7 @@ function readStoredCart(): CartLine[] {
  */
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lines, dispatch] = useReducer(cartReducer, undefined, readStoredCart);
-  const [shippingConfig, setShippingConfig] = useState<{ flatShippingRate: number; freeShippingThreshold: number | null } | null>(null);
+  const [shippingConfig, setShippingConfig] = useState<ShippingConfig | null>(null);
 
   // Fetch shipping settings on mount
   useEffect(() => {
@@ -96,27 +96,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = useCallback(() => dispatch({ type: 'clear' }), []);
 
-  // Calculate shipping based on flat rate + free threshold
-  const shipping = useMemo(() => {
-    if (!shippingConfig) return 0;
-    const subtotal = getCartSubtotal(lines);
-    const { flatShippingRate, freeShippingThreshold } = shippingConfig;
-    if (freeShippingThreshold !== null && subtotal >= freeShippingThreshold) return 0;
-    return flatShippingRate;
+  // Calculate totals using the same logic as Checkout page for consistency
+  const { subtotal, shipping, total } = useMemo(() => {
+    const orderLines: OrderLine[] = buildOrderLines(lines);
+    const config = shippingConfig ?? { flatShippingRate: 15, freeShippingThreshold: 150 };
+    const totals = calculateTotals(orderLines, config);
+    return totals;
   }, [lines, shippingConfig]);
 
   const value = useMemo<CartContextValue>(
     () => ({
       lines,
       itemCount: getCartItemCount(lines),
-      subtotal: getCartSubtotal(lines),
+      subtotal,
       shipping,
+      total,
       addItem,
       updateQuantity,
       removeItem,
       clearCart,
     }),
-    [lines, shipping, addItem, updateQuantity, removeItem, clearCart]
+    [lines, subtotal, shipping, total, addItem, updateQuantity, removeItem, clearCart]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -9,6 +9,7 @@ export interface CartContextValue {
   itemCount: number;
   subtotal: number;
   shipping: number;
+  total: number;
   addItem: (product: Product, quantity: number, color: string, size: string) => void;
   updateQuantity: (cartId: string, delta: number) => void;
   removeItem: (cartId: string) => void;
