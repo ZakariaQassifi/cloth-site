@@ -545,6 +545,8 @@ export const fr: Dictionary = {
   'admin.settings.generalTitle': 'Paramètres généraux',
   'admin.settings.storeName': 'Nom de la boutique',
   'admin.settings.storeNamePlaceholder': 'ex. KINETIC STUDIO',
+  'admin.settings.logoUrl': 'URL du logo',
+  'admin.settings.logoUrlPlaceholder': 'https://exemple.com/logo.png',
   'admin.settings.copyrightText': 'Texte de copyright',
   'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. Tous droits réservés.',
 
@@ -593,6 +595,22 @@ export const fr: Dictionary = {
   'admin.settings.customCssPlaceholder': '/* Styles personnalisés ici */',
   'admin.settings.customJs': 'JavaScript personnalisé',
   'admin.settings.customJsPlaceholder': '// Scripts personnalisés ici',
+
+  // Settings: Hero Section
+  'admin.settings.heroTitle': 'Section Hero',
+  'admin.settings.heroTitleLabel': 'Titre du Hero',
+  'admin.settings.heroTitlePlaceholder': 'AFFIRMEZ VOTRE STYLE',
+  'admin.settings.heroSubtitleLabel': 'Sous-titre du Hero',
+  'admin.settings.heroSubtitlePlaceholder': 'Découvrez les dernières pièces conçues pour votre style quotidien.',
+  'admin.settings.heroImagesLabel': 'Images du carrousel Hero',
+  'admin.settings.heroImagesDescription': 'Ajoutez plusieurs images pour le carrousel Hero (défilement auto 5s). Glissez pour réordonner.',
+  'admin.settings.heroImageUrlPlaceholder': 'https://exemple.com/image-hero.jpg',
+  'admin.settings.addHeroImage': 'Ajouter une image Hero',
+  'admin.settings.removeHeroImage': 'Supprimer l\'image Hero',
+
+  // Settings: Footer
+  'admin.settings.footerImageUrl': 'URL de l\'image du pied de page',
+  'admin.settings.footerImageUrlPlaceholder': 'https://exemple.com/logo-pied-page.png',
 
   'admin.deleteProductFailed': 'Échec de la suppression du produit',
   'admin.updateVisibilityFailed': 'Échec de la mise à jour de la visibilité',

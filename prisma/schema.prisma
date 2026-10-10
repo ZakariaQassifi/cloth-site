@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -195,6 +195,8 @@ model SiteSettings {
   id            String    @id @default("default")
   /// Store name displayed in header/footer
   storeName     String    @default("KINETIC STUDIO") @map("store_name")
+  /// Logo URL displayed in header
+  logoUrl       String?   @map("logo_url")
   /// Copyright text in footer
   copyrightText String?   @default("© 2026 KINETIC STUDIO. All rights reserved.") @map("copyright_text")
   /// Contact email displayed in footer/contact page
@@ -218,6 +220,14 @@ model SiteSettings {
   /// Custom CSS/JS for advanced customization
   customCss     String?   @map("custom_css")
   customJs      String?   @map("custom_js")
+  /// Hero section title
+  heroTitle     String?   @map("hero_title")
+  /// Hero section subtitle
+  heroSubtitle  String?   @map("hero_subtitle")
+  /// Hero slider images stored as JSON array
+  heroImages    String?   @map("hero_images")
+  /// Footer image/logo URL
+  footerImageUrl String?  @map("footer_image_url")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 

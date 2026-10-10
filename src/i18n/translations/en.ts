@@ -529,6 +529,8 @@ export const en = {
   'admin.settings.generalTitle': 'General Settings',
   'admin.settings.storeName': 'Store Name',
   'admin.settings.storeNamePlaceholder': 'e.g. KINETIC STUDIO',
+  'admin.settings.logoUrl': 'Logo URL',
+  'admin.settings.logoUrlPlaceholder': 'https://example.com/logo.png',
   'admin.settings.copyrightText': 'Copyright Text',
   'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. All rights reserved.',
 
@@ -577,6 +579,22 @@ export const en = {
   'admin.settings.customCssPlaceholder': '/* Custom styles here */',
   'admin.settings.customJs': 'Custom JavaScript',
   'admin.settings.customJsPlaceholder': '// Custom scripts here',
+
+  // Settings: Hero Section
+  'admin.settings.heroTitle': 'Hero Section',
+  'admin.settings.heroTitleLabel': 'Hero Title',
+  'admin.settings.heroTitlePlaceholder': 'DEFINE YOUR STYLE',
+  'admin.settings.heroSubtitleLabel': 'Hero Subtitle',
+  'admin.settings.heroSubtitlePlaceholder': 'Discover the latest pieces designed for your everyday style.',
+  'admin.settings.heroImagesLabel': 'Hero Slider Images',
+  'admin.settings.heroImagesDescription': 'Add multiple images for the hero carousel (5-second auto-slide). Drag to reorder.',
+  'admin.settings.heroImageUrlPlaceholder': 'https://example.com/hero-image.jpg',
+  'admin.settings.addHeroImage': 'Add Hero Image',
+  'admin.settings.removeHeroImage': 'Remove hero image',
+
+  // Settings: Footer
+  'admin.settings.footerImageUrl': 'Footer Image URL',
+  'admin.settings.footerImageUrlPlaceholder': 'https://example.com/footer-logo.png',
 
   'admin.deleteProductFailed': 'Failed to delete product',
   'admin.updateVisibilityFailed': 'Failed to update visibility',

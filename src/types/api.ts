@@ -153,6 +153,7 @@ export interface CategoryInput {
 export interface SiteSettings {
   id: string;
   storeName: string;
+  logoUrl?: string | null;
   copyrightText?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
@@ -165,6 +166,10 @@ export interface SiteSettings {
   trackingId?: string | null;
   customCss?: string | null;
   customJs?: string | null;
+  heroTitle?: string | null;
+  heroSubtitle?: string | null;
+  heroImages?: string | null;
+  footerImageUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -172,6 +177,7 @@ export interface SiteSettings {
 /** Input for updating site settings. */
 export interface SiteSettingsInput {
   storeName?: string;
+  logoUrl?: string | null;
   copyrightText?: string | null;
   contactEmail?: string | null;
   contactPhone?: string | null;
@@ -184,6 +190,10 @@ export interface SiteSettingsInput {
   trackingId?: string | null;
   customCss?: string | null;
   customJs?: string | null;
+  heroTitle?: string | null;
+  heroSubtitle?: string | null;
+  heroImages?: string | null;
+  footerImageUrl?: string | null;
 }
 
 /** Normalises a rejected response into a readable message. */

@@ -530,6 +530,8 @@ export const ar: Dictionary = {
   'admin.settings.generalTitle': 'الإعدادات العامة',
   'admin.settings.storeName': 'اسم المتجر',
   'admin.settings.storeNamePlaceholder': 'مثال: KINETIC STUDIO',
+  'admin.settings.logoUrl': 'رابط الشعار (Logo URL)',
+  'admin.settings.logoUrlPlaceholder': 'https://example.com/logo.png',
   'admin.settings.copyrightText': 'نص حقوق النشر',
   'admin.settings.copyrightTextPlaceholder': '© 2026 KINETIC STUDIO. جميع الحقوق محفوظة.',
 
@@ -578,6 +580,22 @@ export const ar: Dictionary = {
   'admin.settings.customCssPlaceholder': '/* أنماط مخصصة هنا */',
   'admin.settings.customJs': 'JavaScript مخصص',
   'admin.settings.customJsPlaceholder': '// نصوص مخصصة هنا',
+
+  // Settings: Hero Section
+  'admin.settings.heroTitle': 'قسم Hero',
+  'admin.settings.heroTitleLabel': 'عنوان Hero',
+  'admin.settings.heroTitlePlaceholder': 'أعرب عن أسلوبك',
+  'admin.settings.heroSubtitleLabel': 'النص الفرعي Hero',
+  'admin.settings.heroSubtitlePlaceholder': 'اكتشف أحدث القطع المصممة لأسلوبك اليومي.',
+  'admin.settings.heroImagesLabel': 'صور شريط Hero',
+  'admin.settings.heroImagesDescription': 'أضف عدة صور لشريط Hero المنزلق (تلقائي كل 5 ثواني). اسحب لإعادة الترتيب.',
+  'admin.settings.heroImageUrlPlaceholder': 'https://example.com/hero-image.jpg',
+  'admin.settings.addHeroImage': 'إضافة صورة Hero',
+  'admin.settings.removeHeroImage': 'إزالة صورة Hero',
+
+  // Settings: Footer
+  'admin.settings.footerImageUrl': 'رابط صورة التذييل',
+  'admin.settings.footerImageUrlPlaceholder': 'https://example.com/footer-logo.png',
 
   'admin.deleteProductFailed': 'تعذر حذف المنتج',
   'admin.updateVisibilityFailed': 'تعذر تحديث الظهور',

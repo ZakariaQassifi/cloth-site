@@ -138,7 +138,6 @@ export function App() {
   return (
     <>
       <Header
-        brandName="KINETIC"
         cartCount={itemCount}
         wishlistCount={wishlistCount}
         onCartClick={() => setIsCartOpen(true)}

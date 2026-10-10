@@ -687,6 +687,7 @@ app.get('/api/settings', async (_req: Request, res: Response, next: NextFunction
       ...settings,
       socialLinks: parseJsonField<string[]>(settings.socialLinks, []),
       footerLinks: parseJsonField<Array<{ label: string; href: string }>>(settings.footerLinks, []),
+      heroImages: parseJsonField<string[]>(settings.heroImages, []),
     };
 
     return sendResponse(res, 200, true, 'Settings fetched successfully', response);
@@ -699,6 +700,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
   try {
     const {
       storeName,
+      logoUrl,
       copyrightText,
       contactEmail,
       contactPhone,
@@ -711,6 +713,10 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       trackingId,
       customCss,
       customJs,
+      heroTitle,
+      heroSubtitle,
+      heroImages,
+      footerImageUrl,
     } = req.body;
 
     const settings = await prisma.siteSettings.upsert({
@@ -718,6 +724,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       create: {
         id: 'default',
         storeName: storeName || 'KINETIC STUDIO',
+        logoUrl,
         copyrightText: copyrightText || '© 2026 KINETIC STUDIO. All rights reserved.',
         contactEmail,
         contactPhone,
@@ -730,9 +737,14 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         trackingId,
         customCss,
         customJs,
+        heroTitle,
+        heroSubtitle,
+        heroImages: stringifyJsonField(heroImages),
+        footerImageUrl,
       },
       update: {
         ...(storeName !== undefined && { storeName }),
+        ...(logoUrl !== undefined && { logoUrl }),
         ...(copyrightText !== undefined && { copyrightText }),
         ...(contactEmail !== undefined && { contactEmail }),
         ...(contactPhone !== undefined && { contactPhone }),
@@ -745,6 +757,10 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         ...(trackingId !== undefined && { trackingId }),
         ...(customCss !== undefined && { customCss }),
         ...(customJs !== undefined && { customJs }),
+        ...(heroTitle !== undefined && { heroTitle }),
+        ...(heroSubtitle !== undefined && { heroSubtitle }),
+        ...(heroImages !== undefined && { heroImages: stringifyJsonField(heroImages) }),
+        ...(footerImageUrl !== undefined && { footerImageUrl }),
       },
     });
 
@@ -753,6 +769,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       ...settings,
       socialLinks: parseJsonField<string[]>(settings.socialLinks, []),
       footerLinks: parseJsonField<Array<{ label: string; href: string }>>(settings.footerLinks, []),
+      heroImages: parseJsonField<string[]>(settings.heroImages, []),
     };
 
     return sendResponse(res, 200, true, 'Settings updated successfully', response);

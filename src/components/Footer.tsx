@@ -37,6 +37,7 @@ export const Footer: React.FC = () => {
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [contactAddress, setContactAddress] = useState('');
+  const [footerImageUrl, setFooterImageUrl] = useState<string | null>(null);
 
   const loadSettings = useCallback(async () => {
     try {
@@ -48,6 +49,9 @@ export const Footer: React.FC = () => {
         setContactEmail(data.contactEmail || '');
         setContactPhone(data.contactPhone || '');
         setContactAddress(data.contactAddress || '');
+        if (data.footerImageUrl && data.footerImageUrl.trim()) {
+          setFooterImageUrl(data.footerImageUrl);
+        }
 
         if (data.socialLinks) {
           try {
@@ -85,6 +89,14 @@ export const Footer: React.FC = () => {
         <div className="footer-grid">
           {/* Brand Column */}
           <div className="footer-column footer-brand">
+            {footerImageUrl && (
+              <img
+                src={footerImageUrl}
+                alt={storeName}
+                className="footer-brand__image"
+                style={{ height: '48px', width: 'auto', maxWidth: '200px', marginBottom: '1rem' }}
+              />
+            )}
             <h3 className="footer-brand__name">{storeName}</h3>
             {copyrightText && (
               <p className="footer-brand__copyright">{copyrightText}</p>

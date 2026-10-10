@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, Mail, Phone, MapPin } from 'lucide-react';
+import { Link, Mail, Phone, MapPin, Plus, Trash2, GripVertical } from 'lucide-react';
 import { adminFetchSettings, adminUpdateSettings } from '../services/adminApi';
 import type { SiteSettingsInput } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
@@ -34,6 +34,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const [storeName, setStoreName] = useState('KINETIC STUDIO');
+  const [logoUrl, setLogoUrl] = useState('');
   const [copyrightText, setCopyrightText] = useState('© 2026 KINETIC STUDIO. All rights reserved.');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -48,6 +49,11 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
   const [customCss, setCustomCss] = useState('');
   const [customJs, setCustomJs] = useState('');
 
+  const [heroTitle, setHeroTitle] = useState('');
+  const [heroSubtitle, setHeroSubtitle] = useState('');
+  const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [footerImageUrl, setFooterImageUrl] = useState('');
+
   const loadSettings = useCallback(async () => {
     setLoading(true);
     try {
@@ -55,6 +61,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
       if (res.success && res.data) {
         const data = res.data;
         setStoreName(data.storeName || 'KINETIC STUDIO');
+        setLogoUrl(data.logoUrl || '');
         setCopyrightText(data.copyrightText || '© 2026 KINETIC STUDIO. All rights reserved.');
         setContactEmail(data.contactEmail || '');
         setContactPhone(data.contactPhone || '');
@@ -84,12 +91,25 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
           { label: 'Contact', href: '/contact' },
         ]);
 
+        let parsedHeroImages: string[] = [];
+        if (data.heroImages) {
+          try {
+            parsedHeroImages = JSON.parse(data.heroImages);
+          } catch {
+            parsedHeroImages = [];
+          }
+        }
+        setHeroImages(parsedHeroImages);
+
         setMetaTitle(data.metaTitle || '');
         setMetaDescription(data.metaDescription || '');
         setMetaKeywords(data.metaKeywords || '');
         setTrackingId(data.trackingId || '');
         setCustomCss(data.customCss || '');
         setCustomJs(data.customJs || '');
+        setHeroTitle(data.heroTitle || '');
+        setHeroSubtitle(data.heroSubtitle || '');
+        setFooterImageUrl(data.footerImageUrl || '');
       }
     } catch {
       setError(t('admin.settings.loadFailed'));
@@ -119,6 +139,25 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
     setFooterLinks(footerLinks.filter((_, i) => i !== index));
   };
 
+  const handleAddHeroImage = () => {
+    setHeroImages([...heroImages, '']);
+  };
+
+  const handleRemoveHeroImage = (index: number) => {
+    setHeroImages(heroImages.filter((_, i) => i !== index));
+  };
+
+  const handleHeroImageChange = (index: number, value: string) => {
+    setHeroImages(heroImages.map((img, i) => i === index ? value : img));
+  };
+
+  const handleMoveHeroImage = (fromIndex: number, toIndex: number) => {
+    const newImages = [...heroImages];
+    const [removed] = newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, removed);
+    setHeroImages(newImages);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -127,9 +166,11 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
 
     const validSocialLinks = socialLinks.filter(s => s.platform && s.url);
     const validFooterLinks = footerLinks.filter(f => f.label && f.href);
+    const validHeroImages = heroImages.filter(img => img.trim());
 
     const payload: SiteSettingsInput = {
       storeName,
+      logoUrl: logoUrl || null,
       copyrightText,
       contactEmail: contactEmail || null,
       contactPhone: contactPhone || null,
@@ -142,6 +183,10 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
       trackingId: trackingId || null,
       customCss: customCss || null,
       customJs: customJs || null,
+      heroTitle: heroTitle || null,
+      heroSubtitle: heroSubtitle || null,
+      heroImages: validHeroImages.length > 0 ? JSON.stringify(validHeroImages) : null,
+      footerImageUrl: footerImageUrl || null,
     };
 
     try {
@@ -200,6 +245,18 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
               onChange={(e) => setStoreName(e.target.value)}
               placeholder={t('admin.settings.storeNamePlaceholder')}
               required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="logoUrl">{t('admin.settings.logoUrl')}</label>
+            <input
+              type="url"
+              id="logoUrl"
+              className="form-input"
+              value={logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+              placeholder={t('admin.settings.logoUrlPlaceholder')}
             />
           </div>
 
@@ -366,6 +423,113 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
             >
               <Link size={16} /> {t('admin.settings.addFooterLink')}
             </button>
+          </div>
+        </div>
+
+        {/* Footer Image */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.settings.footerImageUrl')}</h3>
+          <div className="form-group">
+            <label className="form-label" htmlFor="footerImageUrl">{t('admin.settings.footerImageUrl')}</label>
+            <input
+              type="url"
+              id="footerImageUrl"
+              className="form-input"
+              value={footerImageUrl}
+              onChange={(e) => setFooterImageUrl(e.target.value)}
+              placeholder={t('admin.settings.footerImageUrlPlaceholder')}
+            />
+          </div>
+        </div>
+
+        {/* Hero Section */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.settings.heroTitle')}</h3>
+          
+          <div className="form-group">
+            <label className="form-label" htmlFor="heroTitle">{t('admin.settings.heroTitleLabel')}</label>
+            <input
+              type="text"
+              id="heroTitle"
+              className="form-input"
+              value={heroTitle}
+              onChange={(e) => setHeroTitle(e.target.value)}
+              placeholder={t('admin.settings.heroTitlePlaceholder')}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="heroSubtitle">{t('admin.settings.heroSubtitleLabel')}</label>
+            <textarea
+              id="heroSubtitle"
+              className="form-input"
+              style={{ height: '80px', padding: '1rem' }}
+              value={heroSubtitle}
+              onChange={(e) => setHeroSubtitle(e.target.value)}
+              placeholder={t('admin.settings.heroSubtitlePlaceholder')}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="heroImages">
+              {t('admin.settings.heroImagesLabel')}
+            </label>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+              {t('admin.settings.heroImagesDescription')}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {heroImages.map((imageUrl, index) => (
+                <div key={index} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn--outline"
+                    onClick={() => handleMoveHeroImage(index, index - 1)}
+                    disabled={index === 0}
+                    style={{ padding: '0.5rem', height: '44px' }}
+                    aria-label="Move up"
+                  >
+                    <GripVertical size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn--outline"
+                    onClick={() => handleMoveHeroImage(index, index + 1)}
+                    disabled={index === heroImages.length - 1}
+                    style={{ padding: '0.5rem', height: '44px' }}
+                    aria-label="Move down"
+                  >
+                    <GripVertical size={16} />
+                  </button>
+                  <input
+                    type="url"
+                    className="form-input"
+                    style={{ flex: 1 }}
+                    value={imageUrl}
+                    onChange={(e) => handleHeroImageChange(index, e.target.value)}
+                    placeholder={t('admin.settings.heroImageUrlPlaceholder')}
+                  />
+                  {heroImages.length > 1 && (
+                    <button
+                      type="button"
+                      className="admin-btn admin-btn--danger"
+                      onClick={() => handleRemoveHeroImage(index)}
+                      style={{ padding: '0.5rem', height: '44px' }}
+                      aria-label={t('admin.settings.removeHeroImage')}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                className="admin-btn admin-btn--outline"
+                onClick={handleAddHeroImage}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content' }}
+              >
+                <Plus size={16} /> {t('admin.settings.addHeroImage')}
+              </button>
+            </div>
           </div>
         </div>
 

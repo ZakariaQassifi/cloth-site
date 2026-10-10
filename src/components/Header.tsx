@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
 import { useCategories } from '../context/useCatalog';
+import { fetchSettings } from '../services/catalogService';
 import { useTranslation } from '../i18n/useI18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import './Header.css';
 
 export interface HeaderProps {
-  brandName?: string;
   cartCount?: number;
   wishlistCount?: number;
   onCartClick?: () => void;
@@ -17,7 +17,6 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  brandName = 'KINETIC',
   cartCount = 0,
   wishlistCount = 0,
   onCartClick,
@@ -28,10 +27,33 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [storeName, setStoreName] = useState('KINETIC');
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   // Categories come from the shared catalog so the nav can never drift from
   // what the API actually serves.
   const categories = useCategories();
+
+  const loadSettings = useCallback(async () => {
+    try {
+      const res = await fetchSettings();
+      if (res.success && res.data) {
+        const data = res.data;
+        if (data.storeName && data.storeName.trim()) {
+          setStoreName(data.storeName);
+        }
+        if (data.logoUrl && data.logoUrl.trim()) {
+          setLogoUrl(data.logoUrl);
+        }
+      }
+    } catch {
+      console.warn('Failed to load header settings');
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
 
   const handleNavClick = (category: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,6 +69,20 @@ export const Header: React.FC<HeaderProps> = ({
 
   const mainNavItems = categories.slice(0, 5);
   const otherItems = categories.slice(5);
+
+  const renderBrand = () => {
+    if (logoUrl) {
+      return (
+        <img
+          src={logoUrl}
+          alt={storeName}
+          className="header__logo"
+          style={{ height: '36px', width: 'auto', maxWidth: '180px' }}
+        />
+      );
+    }
+    return <span className="header__brand-text">{storeName}</span>;
+  };
 
   return (
     <>
@@ -71,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
               onSelectSpecialFilter?.('all');
             }}
           >
-            {brandName}
+            {renderBrand()}
           </a>
 
           {/* Center: Desktop Navigation */}
@@ -159,7 +195,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Slide-out Drawer */}
       <div className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-drawer__header">
-          <span className="header__brand">{brandName}</span>
+          {renderBrand()}
           <button
             type="button"
             className="header__action-btn"
