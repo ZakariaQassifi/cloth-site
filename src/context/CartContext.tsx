@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import {
   addCartLine,
   changeCartLineQuantity,
   createCartLine,
   getCartItemCount,
-  getCartShipping,
   getCartSubtotal,
   removeCartLine,
   reviveCartLines,
@@ -12,6 +11,7 @@ import {
 } from '../data/cart';
 import type { Product } from '../data/products';
 import { CartContext, type CartContextValue } from './cartStore';
+import { fetchSettings } from '../services/catalogService';
 
 const STORAGE_KEY = 'kinetic_cart';
 
@@ -47,7 +47,6 @@ function readStoredCart(): CartLine[] {
   }
 }
 
-
 /**
  * Single source of truth for the shopping bag.
  * The same product in a different size or colour becomes a separate line, and
@@ -55,6 +54,25 @@ function readStoredCart(): CartLine[] {
  */
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lines, dispatch] = useReducer(cartReducer, undefined, readStoredCart);
+  const [shippingConfig, setShippingConfig] = useState<{ flatShippingRate: number; freeShippingThreshold: number | null } | null>(null);
+
+  // Fetch shipping settings on mount
+  useEffect(() => {
+    const loadShippingConfig = async () => {
+      try {
+        const res = await fetchSettings();
+        if (res.success && res.data) {
+          setShippingConfig({
+            flatShippingRate: res.data.flatShippingRate ?? 15,
+            freeShippingThreshold: res.data.freeShippingThreshold ?? 150,
+          });
+        }
+      } catch {
+        console.warn('Failed to load shipping settings');
+      }
+    };
+    loadShippingConfig();
+  }, []);
 
   useEffect(() => {
     try {
@@ -78,18 +96,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = useCallback(() => dispatch({ type: 'clear' }), []);
 
+  // Calculate shipping based on flat rate + free threshold
+  const shipping = useMemo(() => {
+    if (!shippingConfig) return 0;
+    const subtotal = getCartSubtotal(lines);
+    const { flatShippingRate, freeShippingThreshold } = shippingConfig;
+    if (freeShippingThreshold !== null && subtotal >= freeShippingThreshold) return 0;
+    return flatShippingRate;
+  }, [lines, shippingConfig]);
+
   const value = useMemo<CartContextValue>(
     () => ({
       lines,
       itemCount: getCartItemCount(lines),
       subtotal: getCartSubtotal(lines),
-      shipping: getCartShipping(lines),
+      shipping,
       addItem,
       updateQuantity,
       removeItem,
       clearCart,
     }),
-    [lines, addItem, updateQuantity, removeItem, clearCart]
+    [lines, shipping, addItem, updateQuantity, removeItem, clearCart]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
