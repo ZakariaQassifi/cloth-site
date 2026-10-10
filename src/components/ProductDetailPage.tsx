@@ -73,6 +73,7 @@ function pickAvailableVariant(
 
 /** Parse and format product details JSON string into HTML. */
 function formatDetails(details: string): string {
+  if (!details?.trim()) return '';
   try {
     const parsed = JSON.parse(details);
     if (Array.isArray(parsed)) {
@@ -86,11 +87,26 @@ function formatDetails(details: string): string {
   } catch {
     // If not valid JSON, treat as plain text with line breaks
   }
-  return details.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
+  // Handle plain text with line breaks and bullet points
+  return details
+    .split('\n')
+    .map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      // Check for bullet points
+      const bulletMatch = trimmed.match(/^[-•*]\s*(.+)$/);
+      if (bulletMatch) {
+        return `<li>${escapeHtml(bulletMatch[1])}</li>`;
+      }
+      return `<p>${escapeHtml(trimmed)}</p>`;
+    })
+    .filter(Boolean)
+    .join('');
 }
 
 /** Parse and format shipping info JSON string into HTML. */
 function formatShippingInfo(shippingInfo: string): string {
+  if (!shippingInfo?.trim()) return '';
   try {
     const parsed = JSON.parse(shippingInfo);
     if (Array.isArray(parsed)) {
@@ -104,7 +120,21 @@ function formatShippingInfo(shippingInfo: string): string {
   } catch {
     // If not valid JSON, treat as plain text with line breaks
   }
-  return shippingInfo.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
+  // Handle plain text with line breaks and bullet points
+  return shippingInfo
+    .split('\n')
+    .map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      // Check for bullet points
+      const bulletMatch = trimmed.match(/^[-•*]\s*(.+)$/);
+      if (bulletMatch) {
+        return `<li>${escapeHtml(bulletMatch[1])}</li>`;
+      }
+      return `<p>${escapeHtml(trimmed)}</p>`;
+    })
+    .filter(Boolean)
+    .join('');
 }
 
 /** Escape HTML to prevent XSS. */

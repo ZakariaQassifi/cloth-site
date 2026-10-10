@@ -112,9 +112,27 @@ export interface CreateOrderRequest {
  * store-wide flat rate, so the quote a shopper sees at checkout is the amount the
  * server charges.
  */
-export function calculateTotals(lines: OrderLine[]): OrderTotals {
+export interface ShippingConfig {
+  flatShippingRate: number;
+  freeShippingThreshold: number | null;
+}
+
+export function calculateTotals(lines: OrderLine[], shippingConfig?: ShippingConfig): OrderTotals {
   const subtotal = roundAmount(lines.reduce((sum, line) => sum + line.lineTotal, 0));
-  const shipping = roundAmount(lines.reduce((sum, line) => sum + line.lineShipping, 0));
+  
+  let shipping = 0;
+  if (shippingConfig) {
+    const { flatShippingRate, freeShippingThreshold } = shippingConfig;
+    if (freeShippingThreshold !== null && subtotal > freeShippingThreshold) {
+      shipping = 0;
+    } else {
+      shipping = flatShippingRate;
+    }
+  } else {
+    // Fallback to per-line shipping (legacy)
+    shipping = roundAmount(lines.reduce((sum, line) => sum + line.lineShipping, 0));
+  }
+  
   return { subtotal, shipping, total: roundAmount(subtotal + shipping) };
 }
 

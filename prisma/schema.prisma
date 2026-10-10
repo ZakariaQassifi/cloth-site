@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -237,6 +237,10 @@ model SiteSettings {
   showPhoneSupport   Boolean @default(true) @map("show_phone_support")
   showVisitUs        Boolean @default(true) @map("show_visit_us")
   showBusinessHours  Boolean @default(true) @map("show_business_hours")
+  /// Flat shipping rate per order (charged once per order regardless of quantity)
+  flatShippingRate Float    @default(15) @map("flat_shipping_rate")
+  /// Free shipping threshold (orders above this amount get free shipping)
+  freeShippingThreshold Float? @default(150) @map("free_shipping_threshold")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 

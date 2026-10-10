@@ -176,6 +176,8 @@ export interface SiteSettings {
   showPhoneSupport?: boolean;
   showVisitUs?: boolean;
   showBusinessHours?: boolean;
+  flatShippingRate?: number;
+  freeShippingThreshold?: number | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -206,6 +208,8 @@ export interface SiteSettingsInput {
   showPhoneSupport?: boolean;
   showVisitUs?: boolean;
   showBusinessHours?: boolean;
+  flatShippingRate?: number;
+  freeShippingThreshold?: number | null;
 }
 
 /** Normalises a rejected response into a readable message. */

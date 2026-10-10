@@ -523,13 +523,13 @@ export const fr: Dictionary = {
 
   // Product Details & Shipping Info
   'admin.form.detailsTitle': 'Détails du produit et instructions d\'entretien',
-  'admin.form.detailsDescription': 'Entrez un tableau JSON de chaînes ou du texte brut (un élément par ligne). Exemple : ["100 % coton biologique", "Lavage en machine à froid", "Fabriqué au Portugal"]',
-  'admin.form.detailsLabel': 'Détails (JSON ou texte brut)',
-  'admin.form.detailsPlaceholder': '["Matériau 1", "Matériau 2", "Instruction d\'entretien 1"]',
+  'admin.form.detailsDescription': 'Entrez un détail par ligne. Utilisez des sauts de ligne ou des puces (•, -, *). Exemple :\n100 % coton biologique\nLavage en machine à froid\nFabriqué au Portugal',
+  'admin.form.detailsLabel': 'Détails et instructions d\'entretien',
+  'admin.form.detailsPlaceholder': '100 % coton biologique\nLavage en machine à froid\nFabriqué au Portugal',
   'admin.form.shippingInfoTitle': 'Informations livraison et retours',
-  'admin.form.shippingInfoDescription': 'Entrez un tableau JSON de chaînes ou du texte brut (un élément par ligne). Laissez vide pour utiliser les paramètres par défaut de la boutique.',
-  'admin.form.shippingInfoLabel': 'Infos livraison & retours (JSON ou texte brut)',
-  'admin.form.shippingInfoPlaceholder': '["Livraison offerte dès 150 €", "Retours gratuits sous 30 jours", "Expédié sous 1-2 jours ouvrés"]',
+  'admin.form.shippingInfoDescription': 'Entrez une politique de livraison/retour par ligne. Utilisez des sauts de ligne ou des puces (•, -, *). Laissez vide pour utiliser les paramètres par défaut de la boutique.',
+  'admin.form.shippingInfoLabel': 'Infos livraison & retours',
+  'admin.form.shippingInfoPlaceholder': 'Livraison offerte dès 150 €\nRetours gratuits sous 30 jours\nExpédié sous 1-2 jours ouvrés',
 
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'Gestion des clients',
@@ -566,6 +566,14 @@ export const fr: Dictionary = {
   'admin.settings.contactAddressPlaceholder': '123 Rue de la Boutique, Ville, Pays',
   'admin.settings.businessHours': 'Heures d\'ouverture',
   'admin.settings.businessHoursPlaceholder': 'Lun-Ven: 9h00 - 18h00 (GMT+1)\nSam-Dim: Fermé',
+
+  // Settings: Shipping Configuration
+  'admin.settings.shippingTitle': 'Configuration de la livraison',
+  'admin.settings.shippingDescription': 'Configurez le tarif de livraison forfaitaire et le seuil de livraison gratuite pour la boutique.',
+  'admin.settings.flatShippingRate': 'Tarif de livraison forfaitaire',
+  'admin.settings.flatShippingRatePlaceholder': '15,00',
+  'admin.settings.freeShippingThreshold': 'Seuil de livraison gratuite',
+  'admin.settings.freeShippingThresholdPlaceholder': '150,00',
 
   // Settings: Contact Page Management
   'admin.settings.contactPageTitle': 'Gestion de la page Contact',

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { ArrowLeft, Banknote } from 'lucide-react';
 import type { CartLine } from '../data/cart';
 import {
@@ -8,10 +8,12 @@ import {
   toCreateOrderRequest,
   type CustomerInfo,
   type Order,
+  type ShippingConfig,
 } from '../data/order';
 import { useTranslation } from '../i18n/useI18n';
 import type { TranslationKey } from '../i18n/translations/en';
 import { submitOrder } from '../services/orderService';
+import { fetchSettings } from '../services/catalogService';
 import { Button } from './Button';
 import './CheckoutPage.css';
 
@@ -42,10 +44,29 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ lines, onBack, onOrd
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [shippingConfig, setShippingConfig] = useState<ShippingConfig | null>(null);
+
+  // Fetch shipping settings on mount
+  useEffect(() => {
+    const loadShippingConfig = async () => {
+      try {
+        const res = await fetchSettings();
+        if (res.success && res.data) {
+          setShippingConfig({
+            flatShippingRate: res.data.flatShippingRate ?? 15,
+            freeShippingThreshold: res.data.freeShippingThreshold ?? 150,
+          });
+        }
+      } catch {
+        console.warn('Failed to load shipping settings');
+      }
+    };
+    loadShippingConfig();
+  }, []);
 
   // Totals come from the order domain so the summary always matches the order.
   const orderLines = useMemo(() => buildOrderLines(lines), [lines]);
-  const totals = useMemo(() => calculateTotals(orderLines), [orderLines]);
+  const totals = useMemo(() => calculateTotals(orderLines, shippingConfig || undefined), [orderLines, shippingConfig]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target as { name: keyof CustomerInfo; value: string };

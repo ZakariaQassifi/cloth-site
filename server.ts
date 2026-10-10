@@ -193,18 +193,17 @@ const sortSizes = (sizes: string[]): string[] =>
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800';
 
-// Authoritative shipping rules — must stay in sync with FREE_SHIPPING_THRESHOLD
-// and SHIPPING_FLAT_RATE in src/data/order.ts so the charged total matches the
-// total the customer was quoted at checkout.
-const FREE_SHIPPING_THRESHOLD = 150;
-const SHIPPING_FLAT_RATE = 15;
-
 /** The store's only payment method. */
 const PAYMENT_METHOD_CASH_ON_DELIVERY = 'CASH_ON_DELIVERY';
 
-/** Shipping charged for a given subtotal; free above the threshold. */
-const calculateShipping = (subtotal: number): number =>
-  subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FLAT_RATE;
+/**
+ * Shipping charged for a given subtotal; free above the threshold.
+ * Uses flat shipping rate and free shipping threshold from settings.
+ */
+const calculateShipping = (subtotal: number, flatShippingRate: number, freeShippingThreshold: number | null): number => {
+  if (freeShippingThreshold !== null && subtotal > freeShippingThreshold) return 0;
+  return flatShippingRate;
+};
 
 /** Lower-case, dash-separated identifier, matching how category slugs are stored. */
 const slugify = (value: string): string =>
@@ -723,6 +722,8 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       showPhoneSupport,
       showVisitUs,
       showBusinessHours,
+      flatShippingRate,
+      freeShippingThreshold,
     } = req.body;
 
     const settings = await prisma.siteSettings.upsert({
@@ -753,6 +754,8 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         showPhoneSupport: showPhoneSupport ?? true,
         showVisitUs: showVisitUs ?? true,
         showBusinessHours: showBusinessHours ?? true,
+        flatShippingRate: flatShippingRate ?? 15,
+        freeShippingThreshold: freeShippingThreshold ?? 150,
       },
       update: {
         ...(storeName !== undefined && { storeName }),
@@ -779,6 +782,8 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         ...(showPhoneSupport !== undefined && { showPhoneSupport }),
         ...(showVisitUs !== undefined && { showVisitUs }),
         ...(showBusinessHours !== undefined && { showBusinessHours }),
+        ...(flatShippingRate !== undefined && { flatShippingRate }),
+        ...(freeShippingThreshold !== undefined && { freeShippingThreshold }),
       },
     });
 
@@ -1203,6 +1208,15 @@ app.post('/api/orders', rateLimit(ORDER_RATE_LIMIT), async (req: Request, res: R
     }
     const pMethod = PAYMENT_METHOD_CASH_ON_DELIVERY;
 
+    // Fetch shipping settings before transaction
+    const shippingSettings = await prisma.siteSettings.findUnique({
+      where: { id: 'default' },
+      select: { flatShippingRate: true, freeShippingThreshold: true },
+    });
+
+    const flatShippingRate = shippingSettings?.flatShippingRate ?? 15;
+    const freeShippingThreshold = shippingSettings?.freeShippingThreshold ?? 150;
+
     const result = await prisma.$transaction(async (tx) => {
       let calculatedTotal = 0;
       const orderItemsData: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] = [];
@@ -1254,7 +1268,7 @@ app.post('/api/orders', rateLimit(ORDER_RATE_LIMIT), async (req: Request, res: R
         orderItem.productImage = primaryImg ? primaryImg.imageUrl : FALLBACK_IMAGE;
       }
 
-      const shipping = calculateShipping(calculatedTotal);
+      const shipping = calculateShipping(calculatedTotal, flatShippingRate, freeShippingThreshold);
       const finalTotal = calculatedTotal + shipping;
 
       const order = await tx.order.create({

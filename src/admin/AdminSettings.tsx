@@ -55,6 +55,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
   const [footerImageUrl, setFooterImageUrl] = useState('');
 
   const [businessHours, setBusinessHours] = useState('');
+  const [flatShippingRate, setFlatShippingRate] = useState(15);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(150);
   const [showEmailSupport, setShowEmailSupport] = useState(true);
   const [showPhoneSupport, setShowPhoneSupport] = useState(true);
   const [showVisitUs, setShowVisitUs] = useState(true);
@@ -76,6 +78,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
         setContactPhone(data.contactPhone || '');
         setContactAddress(data.contactAddress || '');
         setBusinessHours(data.businessHours || '');
+        setFlatShippingRate(data.flatShippingRate ?? 15);
+        setFreeShippingThreshold(data.freeShippingThreshold ?? 150);
 
         let parsedSocial: SocialLink[] = [];
         if (data.socialLinks) {
@@ -224,6 +228,8 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
       showPhoneSupport,
       showVisitUs,
       showBusinessHours,
+      flatShippingRate,
+      freeShippingThreshold,
     };
 
     try {
@@ -385,6 +391,44 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
               onChange={(e) => setBusinessHours(e.target.value)}
               placeholder={t('admin.settings.businessHoursPlaceholder')}
             />
+          </div>
+        </div>
+
+        {/* Shipping Configuration */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.settings.shippingTitle')}</h3>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            {t('admin.settings.shippingDescription')}
+          </p>
+
+          <div className="form-grid form-grid--2col">
+            <div className="form-group">
+              <label className="form-label" htmlFor="flatShippingRate">{t('admin.settings.flatShippingRate')}</label>
+              <input
+                type="number"
+                id="flatShippingRate"
+                className="form-input"
+                value={flatShippingRate}
+                onChange={(e) => setFlatShippingRate(Number(e.target.value) || 0)}
+                placeholder={t('admin.settings.flatShippingRatePlaceholder')}
+                min="0"
+                step="0.01"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="freeShippingThreshold">{t('admin.settings.freeShippingThreshold')}</label>
+              <input
+                type="number"
+                id="freeShippingThreshold"
+                className="form-input"
+                value={freeShippingThreshold ?? ''}
+                onChange={(e) => setFreeShippingThreshold(e.target.value ? Number(e.target.value) : null)}
+                placeholder={t('admin.settings.freeShippingThresholdPlaceholder')}
+                min="0"
+                step="0.01"
+              />
+            </div>
           </div>
         </div>
 

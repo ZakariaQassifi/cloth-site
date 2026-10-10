@@ -508,13 +508,13 @@ export const en = {
 
   // Product Details & Shipping Info
   'admin.form.detailsTitle': 'Product Details & Care Instructions',
-  'admin.form.detailsDescription': 'Enter as JSON array of strings or plain text (one item per line). Example: ["100% Organic Cotton", "Machine wash cold", "Made in Portugal"]',
-  'admin.form.detailsLabel': 'Details (JSON or plain text)',
-  'admin.form.detailsPlaceholder': '["Material 1", "Material 2", "Care instruction 1"]',
+  'admin.form.detailsDescription': 'Enter one detail per line. Use line breaks or bullet points (•, -, *). Example:\n100% Organic Cotton\nMachine wash cold\nMade in Portugal',
+  'admin.form.detailsLabel': 'Details & Care Instructions',
+  'admin.form.detailsPlaceholder': '100% Organic Cotton\nMachine wash cold\nMade in Portugal',
   'admin.form.shippingInfoTitle': 'Shipping & Returns Information',
-  'admin.form.shippingInfoDescription': 'Enter as JSON array of strings or plain text (one item per line). Leave empty to use store defaults.',
-  'admin.form.shippingInfoLabel': 'Shipping & Returns Info (JSON or plain text)',
-  'admin.form.shippingInfoPlaceholder': '["Free shipping over $150", "30-day free returns", "Ships within 1-2 business days"]',
+  'admin.form.shippingInfoDescription': 'Enter one shipping/return policy per line. Use line breaks or bullet points (•, -, *). Leave empty to use store defaults.',
+  'admin.form.shippingInfoLabel': 'Shipping & Returns Info',
+  'admin.form.shippingInfoPlaceholder': 'Free shipping over $150\n30-day free returns\nShips within 1-2 business days',
 
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'Customers Management',
@@ -550,6 +550,14 @@ export const en = {
   'admin.settings.contactAddressPlaceholder': '123 Store St, City, Country',
   'admin.settings.businessHours': 'Business Hours',
   'admin.settings.businessHoursPlaceholder': 'Mon-Fri: 9:00 AM - 6:00 PM (GMT+1)\nSat-Sun: Closed',
+
+  // Settings: Shipping Configuration
+  'admin.settings.shippingTitle': 'Shipping Configuration',
+  'admin.settings.shippingDescription': 'Configure flat shipping rate and free shipping threshold for the store.',
+  'admin.settings.flatShippingRate': 'Flat Shipping Rate',
+  'admin.settings.flatShippingRatePlaceholder': '15.00',
+  'admin.settings.freeShippingThreshold': 'Free Shipping Threshold',
+  'admin.settings.freeShippingThresholdPlaceholder': '150.00',
 
   // Settings: Contact Page Management
   'admin.settings.contactPageTitle': 'Contact Page Management',

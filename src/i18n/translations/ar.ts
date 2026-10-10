@@ -509,13 +509,13 @@ export const ar: Dictionary = {
 
   // Product Details & Shipping Info
   'admin.form.detailsTitle': 'تفاصيل المنتج وتعليمات العناية',
-  'admin.form.detailsDescription': 'أدخل كمصفوفة JSON من السلاسل أو نص عادي (عنصر واحد في كل سطر). مثال: ["100٪ قطن عضوي", "غسيل آلي بالماء البارد", "صنع في البرتغال"]',
-  'admin.form.detailsLabel': 'التفاصيل (JSON أو نص عادي)',
-  'admin.form.detailsPlaceholder': '["خامة 1", "خامة 2", "تعليمات عناية 1"]',
+  'admin.form.detailsDescription': 'أدخل تفصيلاً واحداً في كل سطر. استخدم فواصل الأسطر أو نقاط (•, -, *). مثال:\n100٪ قطن عضوي\nغسيل آلي بالماء البارد\nصنع في البرتغال',
+  'admin.form.detailsLabel': 'التفاصيل وتعليمات العناية',
+  'admin.form.detailsPlaceholder': '100٪ قطن عضوي\nغسيل آلي بالماء البارد\nصنع في البرتغال',
   'admin.form.shippingInfoTitle': 'معلومات الشحن والإرجاع',
-  'admin.form.shippingInfoDescription': 'أدخل كمصفوفة JSON من السلاسل أو نص عادي (عنصر واحد في كل سطر). اتركه فارغاً لاستخدام إعدادات المتجر الافتراضية.',
-  'admin.form.shippingInfoLabel': 'معلومات الشحن والإرجاع (JSON أو نص عادي)',
-  'admin.form.shippingInfoPlaceholder': '["شحن مجاني للطلبات فوق 150 $", "إرجاع مجاني خلال 30 يوماً", "يتم الشحن خلال 1-2 يوم عمل"]',
+  'admin.form.shippingInfoDescription': 'أدخل سياسة شحن/إرجاع واحدة في كل سطر. استخدم فواصل الأسطر أو نقاط (•, -, *). اتركه فارغاً لاستخدام إعدادات المتجر الافتراضية.',
+  'admin.form.shippingInfoLabel': 'معلومات الشحن والإرجاع',
+  'admin.form.shippingInfoPlaceholder': 'شحن مجاني للطلبات فوق 150 $\nإرجاع مجاني خلال 30 يوماً\nيتم الشحن خلال 1-2 يوم عمل',
 
   // --------------------------------------------------- admin: placeholders
   'admin.customers.title': 'إدارة العملاء',
@@ -551,6 +551,14 @@ export const ar: Dictionary = {
   'admin.settings.contactAddressPlaceholder': '123 شارع المتجر، المدينة، البلد',
   'admin.settings.businessHours': 'ساعات العمل',
   'admin.settings.businessHoursPlaceholder': 'الاثنين-الجمعة: 9:00 ص - 6:00 م (توقيت جرينتش+1)\nالسبت-الأحد: مغلق',
+
+  // Settings: Shipping Configuration
+  'admin.settings.shippingTitle': 'إعدادات الشحن',
+  'admin.settings.shippingDescription': 'قم بتكوين رسوم الشحن الثابتة وعتبة الشحن المجاني للمتجر.',
+  'admin.settings.flatShippingRate': 'رسوم شحن ثابتة',
+  'admin.settings.flatShippingRatePlaceholder': '15.00',
+  'admin.settings.freeShippingThreshold': 'حد الشحن المجاني',
+  'admin.settings.freeShippingThresholdPlaceholder': '150.00',
 
   // Settings: Contact Page Management
   'admin.settings.contactPageTitle': 'إدارة صفحة الاتصال',

@@ -6,6 +6,35 @@ import { useTranslation } from '../i18n/useI18n';
 import { useColorLabel } from '../i18n/hooks';
 import './AdminProductForm.css';
 
+/** Convert plain text (lines/bullets) to JSON array string. */
+function textToJsonArray(text: string): string | null {
+  if (!text?.trim()) return null;
+  const lines = text
+    .split('\n')
+    .map(line => line.replace(/^[-•*]\s*/, '').trim()) // Remove bullet points
+    .filter(line => line.length > 0);
+  return lines.length > 0 ? JSON.stringify(lines) : null;
+}
+
+/** Convert JSON array string to plain text (one item per line). */
+function jsonArrayToText(jsonString: string | null | undefined): string {
+  if (!jsonString?.trim()) return '';
+  try {
+    const parsed = JSON.parse(jsonString);
+    if (Array.isArray(parsed)) {
+      return parsed.map(item => String(item)).join('\n');
+    }
+    if (typeof parsed === 'object' && parsed !== null) {
+      return Object.entries(parsed)
+        .map(([key, value]) => `${key}: ${String(value)}`)
+        .join('\n');
+    }
+    return String(parsed);
+  } catch {
+    return jsonString;
+  }
+}
+
 export interface AdminProductFormProps {
   productToEdit?: AdminProduct | null;
   categories: Category[];
@@ -35,8 +64,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
   const [shippingPrice, setShippingPrice] = useState(productToEdit?.shippingPrice ? String(productToEdit.shippingPrice) : '');
   const [images, setImages] = useState<string[]>(productToEdit?.images || ['https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800']);
   const [hoverImageUrl, setHoverImageUrl] = useState(productToEdit?.hoverImageUrl || '');
-  const [details, setDetails] = useState(productToEdit?.details || '');
-  const [shippingInfo, setShippingInfo] = useState(productToEdit?.shippingInfo || '');
+  const [details, setDetails] = useState(productToEdit?.details ? jsonArrayToText(productToEdit.details) : '');
+  const [shippingInfo, setShippingInfo] = useState(productToEdit?.shippingInfo ? jsonArrayToText(productToEdit.shippingInfo) : '');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -199,8 +228,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
       categoryId,
       images,
       hoverImageUrl: hoverImageUrl || null,
-      details: details || null,
-      shippingInfo: shippingInfo || null,
+      details: textToJsonArray(details),
+      shippingInfo: textToJsonArray(shippingInfo),
       variants: variantsPayload,
       isOutOfStock,
       isActive,
@@ -502,7 +531,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
             <textarea
               id="details"
               className="form-input"
-              style={{ height: '150px', padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}
+              style={{ height: '150px', padding: '1rem' }}
               value={details}
               onChange={(e) => setDetails(e.target.value)}
               placeholder={t('admin.form.detailsPlaceholder')}
@@ -521,7 +550,7 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
             <textarea
               id="shippingInfo"
               className="form-input"
-              style={{ height: '150px', padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}
+              style={{ height: '150px', padding: '1rem' }}
               value={shippingInfo}
               onChange={(e) => setShippingInfo(e.target.value)}
               placeholder={t('admin.form.shippingInfoPlaceholder')}
