@@ -37,6 +37,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const categoriesRef = useRef<HTMLDivElement>(null);
 
   const loadCategories = useCallback(async () => {
@@ -100,6 +102,15 @@ export const Header: React.FC<HeaderProps> = ({
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
+
+  const handleMobileSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      onSelectSpecialFilter?.('all'); // Navigate to search results page
+      setMobileSearchOpen(false);
+      setMobileMenuOpen(false);
+    }
+  };
 
   const renderBrand = () => {
     if (logoUrl) {
@@ -193,36 +204,49 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </nav>
 
-          {/* Right: Actions */}
+          {/* Right: Actions - Mobile: Language Switcher + Cart | Desktop: All actions */}
           <div className="header__actions">
             <LanguageSwitcher />
-            <button type="button" className="header__action-btn" aria-label={t('nav.search')}>
-              <Search size={20} />
-            </button>
-            <button type="button" className="header__action-btn" aria-label={t('nav.account')}>
-              <User size={20} />
-            </button>
+            {/* Mobile Cart - always visible */}
             <button
               type="button"
-              className="header__action-btn"
-              aria-label={t('nav.wishlist')}
-              onClick={onWishlistClick}
-              data-wishlist-link="header"
-            >
-              <Heart size={20} />
-              {wishlistCount > 0 && (
-                <span className="header__cart-badge">{wishlistCount}</span>
-              )}
-            </button>
-            <button
-              type="button"
-              className="header__action-btn"
+              className="header__action-btn header__action-btn--cart"
               aria-label={t('nav.shoppingBag')}
               onClick={onCartClick}
             >
               <ShoppingBag size={20} />
               {cartCount > 0 && <span className="header__cart-badge">{cartCount}</span>}
             </button>
+            {/* Desktop-only actions */}
+            <div className="header__actions--desktop">
+              <button type="button" className="header__action-btn" aria-label={t('nav.search')}>
+                <Search size={20} />
+              </button>
+              <button type="button" className="header__action-btn" aria-label={t('nav.account')}>
+                <User size={20} />
+              </button>
+              <button
+                type="button"
+                className="header__action-btn"
+                aria-label={t('nav.wishlist')}
+                onClick={onWishlistClick}
+                data-wishlist-link="header"
+              >
+                <Heart size={20} />
+                {wishlistCount > 0 && (
+                  <span className="header__cart-badge">{wishlistCount}</span>
+                )}
+              </button>
+              <button
+                type="button"
+                className="header__action-btn"
+                aria-label={t('nav.shoppingBag')}
+                onClick={onCartClick}
+              >
+                <ShoppingBag size={20} />
+                {cartCount > 0 && <span className="header__cart-badge">{cartCount}</span>}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -230,7 +254,10 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Overlay */}
       <div
         className={`mobile-overlay ${mobileMenuOpen ? 'open' : ''}`}
-        onClick={() => setMobileMenuOpen(false)}
+        onClick={() => {
+          setMobileMenuOpen(false);
+          setMobileSearchOpen(false);
+        }}
       />
 
       {/* Mobile Slide-out Drawer */}
@@ -240,7 +267,10 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             className="header__action-btn"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setMobileSearchOpen(false);
+            }}
             aria-label={t('nav.closeMenu')}
           >
             <X size={24} />
@@ -248,6 +278,40 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="mobile-drawer__body">
+          {/* Mobile Search Bar */}
+          <div className={`mobile-search ${mobileSearchOpen ? 'open' : ''}`}>
+            <form onSubmit={handleMobileSearchSubmit} className="mobile-search__form">
+              <Search size={20} className="mobile-search__icon" />
+              <input
+                type="search"
+                className="mobile-search__input"
+                placeholder={t('nav.search')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setMobileSearchOpen(true)}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                className="mobile-search__close"
+                onClick={() => {
+                  setSearchQuery('');
+                  setMobileSearchOpen(false);
+                }}
+                aria-label="Clear search"
+              >
+                <X size={18} />
+              </button>
+            </form>
+            <button
+              type="button"
+              className="mobile-search__toggle"
+              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+            >
+              {mobileSearchOpen ? <X size={20} /> : <Search size={20} />}
+            </button>
+          </div>
+
           <ul className="mobile-nav-list">
             <li className="mobile-nav-item">
               <a href="#" className="mobile-nav-link" onClick={(e) => handleSpecialClick('new', e)}>
@@ -296,6 +360,35 @@ export const Header: React.FC<HeaderProps> = ({
               </a>
             </li>
           </ul>
+
+          {/* Additional Mobile Actions */}
+          <div className="mobile-drawer__actions">
+            <button
+              type="button"
+              className="mobile-drawer__action-btn"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onWishlistClick?.();
+              }}
+            >
+              <Heart size={22} />
+              <span>{t('nav.wishlist')}</span>
+              {wishlistCount > 0 && (
+                <span className="header__cart-badge">{wishlistCount}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              className="mobile-drawer__action-btn"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                // User account action
+              }}
+            >
+              <User size={22} />
+              <span>{t('nav.account')}</span>
+            </button>
+          </div>
         </div>
 
         <div className="mobile-drawer__footer">
@@ -307,22 +400,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-caption">{t('nav.accountSettings')}</span>
             <User size={18} />
           </div>
-          <button
-            type="button"
-            className="mobile-drawer__footer-link"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onWishlistClick?.();
-            }}
-          >
-            <span className="text-caption">{t('nav.wishlist')}</span>
-            <span className="mobile-drawer__footer-meta">
-              {wishlistCount > 0 && (
-                <span className="header__cart-badge">{wishlistCount}</span>
-              )}
-              <Heart size={18} />
-            </span>
-          </button>
         </div>
       </div>
     </>
