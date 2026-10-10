@@ -3,7 +3,6 @@ import { Link, Mail, Phone, MapPin, Trash2, GripVertical, Upload } from 'lucide-
 import { adminFetchSettings, adminUpdateSettings, adminUploadImages } from '../services/adminApi';
 import type { SiteSettingsInput } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
-import './AdminLayout.css';
 
 interface SocialLink {
   platform: string;

@@ -1,8 +1,8 @@
+@import './rtl.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './rtl.css';
 
 :root {
   /* Design System: Fashion-oriented Minimal / Premium Black & White */

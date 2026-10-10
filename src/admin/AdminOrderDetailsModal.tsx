@@ -5,7 +5,6 @@ import { useTranslation } from '../i18n/useI18n';
 import { useOrderStatusLabel, usePaymentLabel } from '../i18n/hooks';
 import type { AdminOrder, OrderStatus } from '../types/api';
 import { ColorValue } from './AdminOrders';
-import './AdminLayout.css';
 
 export interface AdminOrderDetailsModalProps {
   order: AdminOrder;
