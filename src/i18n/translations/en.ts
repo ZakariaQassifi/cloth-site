@@ -548,6 +548,20 @@ export const en = {
   'admin.settings.contactPhonePlaceholder': '+1 (555) 000-0000',
   'admin.settings.contactAddress': 'Contact Address',
   'admin.settings.contactAddressPlaceholder': '123 Store St, City, Country',
+  'admin.settings.businessHours': 'Business Hours',
+  'admin.settings.businessHoursPlaceholder': 'Mon-Fri: 9:00 AM - 6:00 PM (GMT+1)\nSat-Sun: Closed',
+
+  // Settings: Contact Page Management
+  'admin.settings.contactPageTitle': 'Contact Page Management',
+  'admin.settings.contactPageDescription': 'Control which contact sections are visible on the storefront contact page.',
+  'admin.settings.showEmailSupport': 'Show Email Support',
+  'admin.settings.showEmailSupportDesc': 'Display the email contact card on the contact page.',
+  'admin.settings.showPhoneSupport': 'Show Phone Support',
+  'admin.settings.showPhoneSupportDesc': 'Display the phone contact card on the contact page.',
+  'admin.settings.showVisitUs': 'Show Visit Us',
+  'admin.settings.showVisitUsDesc': 'Display the address/location card on the contact page.',
+  'admin.settings.showBusinessHours': 'Show Business Hours',
+  'admin.settings.showBusinessHoursDesc': 'Display the business hours card on the contact page.',
 
   // Settings: Social
   'admin.settings.socialTitle': 'Social Media Links',

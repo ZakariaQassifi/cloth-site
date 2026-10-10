@@ -159,6 +159,7 @@ export interface SiteSettings {
   contactEmail?: string | null;
   contactPhone?: string | null;
   contactAddress?: string | null;
+  businessHours?: string | null;
   socialLinks?: string | null;
   footerLinks?: string | null;
   metaTitle?: string | null;
@@ -171,6 +172,10 @@ export interface SiteSettings {
   heroSubtitle?: string | null;
   heroImages?: string | null;
   footerImageUrl?: string | null;
+  showEmailSupport?: boolean;
+  showPhoneSupport?: boolean;
+  showVisitUs?: boolean;
+  showBusinessHours?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -184,6 +189,7 @@ export interface SiteSettingsInput {
   contactEmail?: string | null;
   contactPhone?: string | null;
   contactAddress?: string | null;
+  businessHours?: string | null;
   socialLinks?: string | null;
   footerLinks?: string | null;
   metaTitle?: string | null;
@@ -196,6 +202,10 @@ export interface SiteSettingsInput {
   heroSubtitle?: string | null;
   heroImages?: string | null;
   footerImageUrl?: string | null;
+  showEmailSupport?: boolean;
+  showPhoneSupport?: boolean;
+  showVisitUs?: boolean;
+  showBusinessHours?: boolean;
 }
 
 /** Normalises a rejected response into a readable message. */

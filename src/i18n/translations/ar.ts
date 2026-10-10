@@ -549,6 +549,20 @@ export const ar: Dictionary = {
   'admin.settings.contactPhonePlaceholder': '+966 50 000 0000',
   'admin.settings.contactAddress': 'عنوان الاتصال',
   'admin.settings.contactAddressPlaceholder': '123 شارع المتجر، المدينة، البلد',
+  'admin.settings.businessHours': 'ساعات العمل',
+  'admin.settings.businessHoursPlaceholder': 'الاثنين-الجمعة: 9:00 ص - 6:00 م (توقيت جرينتش+1)\nالسبت-الأحد: مغلق',
+
+  // Settings: Contact Page Management
+  'admin.settings.contactPageTitle': 'إدارة صفحة الاتصال',
+  'admin.settings.contactPageDescription': 'تحكم في أقسام الاتصال المرئية على صفحة اتصال المتجر.',
+  'admin.settings.showEmailSupport': 'إظهار دعم البريد الإلكتروني',
+  'admin.settings.showEmailSupportDesc': 'عرض بطاقة الاتصال بالبريد الإلكتروني على صفحة الاتصال.',
+  'admin.settings.showPhoneSupport': 'إظهار دعم الهاتف',
+  'admin.settings.showPhoneSupportDesc': 'عرض بطاقة الاتصال بالهاتف على صفحة الاتصال.',
+  'admin.settings.showVisitUs': 'إظهار "زورونا"',
+  'admin.settings.showVisitUsDesc': 'عرض بطاقة العنوان/الموقع على صفحة الاتصال.',
+  'admin.settings.showBusinessHours': 'إظهار ساعات العمل',
+  'admin.settings.showBusinessHoursDesc': 'عرض بطاقة ساعات العمل على صفحة الاتصال.',
 
   // Settings: Social
   'admin.settings.socialTitle': 'روابط وسائل التواصل الاجتماعي',

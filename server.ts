@@ -706,6 +706,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       contactEmail,
       contactPhone,
       contactAddress,
+      businessHours,
       socialLinks,
       footerLinks,
       metaTitle,
@@ -718,6 +719,10 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       heroSubtitle,
       heroImages,
       footerImageUrl,
+      showEmailSupport,
+      showPhoneSupport,
+      showVisitUs,
+      showBusinessHours,
     } = req.body;
 
     const settings = await prisma.siteSettings.upsert({
@@ -731,6 +736,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         contactEmail,
         contactPhone,
         contactAddress,
+        businessHours,
         socialLinks: stringifyJsonField(socialLinks),
         footerLinks: stringifyJsonField(footerLinks),
         metaTitle,
@@ -743,6 +749,10 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         heroSubtitle,
         heroImages: stringifyJsonField(heroImages),
         footerImageUrl,
+        showEmailSupport: showEmailSupport ?? true,
+        showPhoneSupport: showPhoneSupport ?? true,
+        showVisitUs: showVisitUs ?? true,
+        showBusinessHours: showBusinessHours ?? true,
       },
       update: {
         ...(storeName !== undefined && { storeName }),
@@ -752,6 +762,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         ...(contactEmail !== undefined && { contactEmail }),
         ...(contactPhone !== undefined && { contactPhone }),
         ...(contactAddress !== undefined && { contactAddress }),
+        ...(businessHours !== undefined && { businessHours }),
         ...(socialLinks !== undefined && { socialLinks: stringifyJsonField(socialLinks) }),
         ...(footerLinks !== undefined && { footerLinks: stringifyJsonField(footerLinks) }),
         ...(metaTitle !== undefined && { metaTitle }),
@@ -764,6 +775,10 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
         ...(heroSubtitle !== undefined && { heroSubtitle }),
         ...(heroImages !== undefined && { heroImages: stringifyJsonField(heroImages) }),
         ...(footerImageUrl !== undefined && { footerImageUrl }),
+        ...(showEmailSupport !== undefined && { showEmailSupport }),
+        ...(showPhoneSupport !== undefined && { showPhoneSupport }),
+        ...(showVisitUs !== undefined && { showVisitUs }),
+        ...(showBusinessHours !== undefined && { showBusinessHours }),
       },
     });
 

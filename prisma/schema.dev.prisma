@@ -207,6 +207,8 @@ model SiteSettings {
   contactPhone  String?   @map("contact_phone")
   /// Contact address displayed in footer
   contactAddress String?  @map("contact_address")
+  /// Business hours displayed on contact page
+  businessHours String?   @map("business_hours")
   /// Social media links stored as JSON
   socialLinks   String?   @map("social_links")
   /// Footer navigation links stored as JSON
@@ -230,6 +232,11 @@ model SiteSettings {
   heroImages    String?   @map("hero_images")
   /// Footer image/logo URL
   footerImageUrl String?  @map("footer_image_url")
+  /// Visibility toggles for contact page sections
+  showEmailSupport   Boolean @default(true) @map("show_email_support")
+  showPhoneSupport   Boolean @default(true) @map("show_phone_support")
+  showVisitUs        Boolean @default(true) @map("show_visit_us")
+  showBusinessHours  Boolean @default(true) @map("show_business_hours")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 

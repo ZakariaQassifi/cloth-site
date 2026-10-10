@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Phone, CheckCircle, AlertCircle, Loader2, Clock, MapPin } from 'lucide-react';
 import { useTranslation, type TranslationKey } from '../i18n/useI18n';
-import { brandConfig } from '../config/brand';
 import { Container } from './Container';
 import { Button } from './Button';
+import { fetchSettings } from '../services/catalogService';
+import type { SiteSettings } from '../types/api';
 import './ContactPage.css';
 
 interface FormData {
@@ -38,6 +39,9 @@ const SUBJECT_OPTIONS = [
   { value: 'other', labelKey: 'contact.subject.other' },
 ];
 
+// WhatsApp number to send messages to
+const WHATSAPP_NUMBER = '212633008210';
+
 export const ContactPage: React.FC = () => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<FormData>(EMPTY_FORM);
@@ -45,6 +49,25 @@ export const ContactPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submitMessage, setSubmitMessage] = useState('');
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [settingsLoading, setSettingsLoading] = useState(true);
+
+  // Fetch settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const res = await fetchSettings();
+        if (res.success && res.data) {
+          setSettings(res.data);
+        }
+      } catch {
+        console.warn('Failed to load contact settings');
+      } finally {
+        setSettingsLoading(false);
+      }
+    };
+    loadSettings();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -83,22 +106,27 @@ export const ContactPage: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // Build WhatsApp message
+      const messageParts = [
+        `*New Contact Form Submission*`,
+        ``,
+        `*Name:* ${formData.name}`,
+        `*Email:* ${formData.email}`,
+        `*Phone:* ${formData.phone || 'Not provided'}`,
+        `*Subject:* ${formData.subject}`,
+        ``,
+        `*Message:*`,
+        formData.message,
+      ];
+      const whatsappMessage = encodeURIComponent(messageParts.join('\n'));
+      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
-      const result = await response.json();
+      // Open WhatsApp in new tab
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 
-      if (result.success) {
-        setSubmitStatus('success');
-        setSubmitMessage(t('contact.successMessage'));
-        setFormData(EMPTY_FORM);
-      } else {
-        setSubmitStatus('error');
-        setSubmitMessage(result.message || t('contact.error.submitFailed'));
-      }
+      setSubmitStatus('success');
+      setSubmitMessage(t('contact.successMessage'));
+      setFormData(EMPTY_FORM);
     } catch {
       setSubmitStatus('error');
       setSubmitMessage(t('contact.error.unexpectedError'));
@@ -106,6 +134,46 @@ export const ContactPage: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  // Show loading state while settings load
+  if (settingsLoading) {
+    return (
+      <div className="contact-page">
+        <div className="contact-page__header">
+          <Container maxWidth="lg">
+            <h1 className="contact-page__title">{t('contact.title')}</h1>
+            <p className="contact-page__subtitle">{t('contact.subtitle')}</p>
+          </Container>
+        </div>
+        <div className="contact-page__content">
+          <Container maxWidth="lg">
+            <div className="contact-grid">
+              <div className="contact-form-wrapper">
+                <div className="contact-form-card">
+                  <div className="text-center py-12">
+                    <Loader2 size={32} className="spin mx-auto" />
+                    <p className="mt-4 text-gray-500">{t('common.loading')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine which contact methods to show based on settings
+  const showEmailSupport = settings?.showEmailSupport ?? true;
+  const showPhoneSupport = settings?.showPhoneSupport ?? true;
+  const showVisitUs = settings?.showVisitUs ?? true;
+  const showBusinessHours = settings?.showBusinessHours ?? true;
+
+  // Use settings values or fallbacks
+  const contactEmail = settings?.contactEmail || 'support@kinetic.com';
+  const contactPhone = settings?.contactPhone || '+212 6 00 00 00 00';
+  const contactAddress = settings?.contactAddress || '123 Store St, City, Country';
+  const businessHours = settings?.businessHours || 'Mon-Fri: 9:00 AM - 6:00 PM (GMT+1)\nSat-Sun: Closed';
 
   return (
     <div className="contact-page">
@@ -125,49 +193,63 @@ export const ContactPage: React.FC = () => {
               <p className="contact-info__description">{t('contact.info.description')}</p>
 
               <div className="contact-methods">
-                <div className="contact-method">
-                  <div className="contact-method__icon">
-                    <Mail size={24} />
+                {/* Email Support */}
+                {showEmailSupport && (
+                  <div className="contact-method">
+                    <div className="contact-method__icon">
+                      <Mail size={24} />
+                    </div>
+                    <div className="contact-method__details">
+                      <h3>{t('contact.info.email')}</h3>
+                      <a href={`mailto:${contactEmail}`} className="contact-method__value">
+                        {contactEmail}
+                      </a>
+                      <p className="contact-method__note">{t('contact.info.emailNote')}</p>
+                    </div>
                   </div>
-                  <div className="contact-method__details">
-                    <h3>{t('contact.info.email')}</h3>
-                    <a href={`mailto:${brandConfig.supportEmail}`} className="contact-method__value">
-                      {brandConfig.supportEmail}
-                    </a>
-                    <p className="contact-method__note">{t('contact.info.emailNote')}</p>
-                  </div>
-                </div>
+                )}
 
-                <div className="contact-method">
-                  <div className="contact-method__icon">
-                    <Phone size={24} />
+                {/* Phone Support */}
+                {showPhoneSupport && (
+                  <div className="contact-method">
+                    <div className="contact-method__icon">
+                      <Phone size={24} />
+                    </div>
+                    <div className="contact-method__details">
+                      <h3>{t('contact.info.phone')}</h3>
+                      <a href={`tel:${contactPhone}`} className="contact-method__value">
+                        {contactPhone}
+                      </a>
+                      <p className="contact-method__note">{t('contact.info.phoneNote')}</p>
+                    </div>
                   </div>
-                  <div className="contact-method__details">
-                    <h3>{t('contact.info.phone')}</h3>
-                    <a href={`tel:${brandConfig.supportPhone}`} className="contact-method__value">
-                      {brandConfig.supportPhone}
-                    </a>
-                    <p className="contact-method__note">{t('contact.info.phoneNote')}</p>
-                  </div>
-                </div>
+                )}
 
-                <div className="contact-method">
-                  <div className="contact-method__icon">
-                    <MapPin size={24} />
+                {/* Visit Us */}
+                {showVisitUs && (
+                  <div className="contact-method">
+                    <div className="contact-method__icon">
+                      <MapPin size={24} />
+                    </div>
+                    <div className="contact-method__details">
+                      <h3>{t('contact.info.address')}</h3>
+                      <p className="contact-method__value">{contactAddress}</p>
+                      <p className="contact-method__note">{t('contact.info.addressNote')}</p>
+                    </div>
                   </div>
-                  <div className="contact-method__details">
-                    <h3>{t('contact.info.address')}</h3>
-                    <p className="contact-method__value">{brandConfig.address}</p>
-                    <p className="contact-method__note">{t('contact.info.addressNote')}</p>
-                  </div>
-                </div>
+                )}
               </div>
 
-              <div className="contact-hours">
-                <h3>{t('contact.info.hours.title')}</h3>
-                <p>{t('contact.info.hours.weekdays')}</p>
-                <p>{t('contact.info.hours.weekend')}</p>
-              </div>
+              {/* Business Hours */}
+              {showBusinessHours && (
+                <div className="contact-hours">
+                  <h3>
+                    <Clock size={20} className="inline mr-2" />
+                    {t('contact.info.hours.title')}
+                  </h3>
+                  <div className="whitespace-pre-line">{businessHours}</div>
+                </div>
+              )}
             </div>
 
             {/* Contact Form */}

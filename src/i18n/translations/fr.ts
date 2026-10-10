@@ -564,6 +564,20 @@ export const fr: Dictionary = {
   'admin.settings.contactPhonePlaceholder': '+33 1 23 45 67 89',
   'admin.settings.contactAddress': 'Adresse de contact',
   'admin.settings.contactAddressPlaceholder': '123 Rue de la Boutique, Ville, Pays',
+  'admin.settings.businessHours': 'Heures d\'ouverture',
+  'admin.settings.businessHoursPlaceholder': 'Lun-Ven: 9h00 - 18h00 (GMT+1)\nSam-Dim: Fermé',
+
+  // Settings: Contact Page Management
+  'admin.settings.contactPageTitle': 'Gestion de la page Contact',
+  'admin.settings.contactPageDescription': 'Contrôlez les sections de contact visibles sur la page contact de la boutique.',
+  'admin.settings.showEmailSupport': 'Afficher le support par e-mail',
+  'admin.settings.showEmailSupportDesc': 'Affiche la carte de contact par e-mail sur la page contact.',
+  'admin.settings.showPhoneSupport': 'Afficher le support par téléphone',
+  'admin.settings.showPhoneSupportDesc': 'Affiche la carte de contact par téléphone sur la page contact.',
+  'admin.settings.showVisitUs': 'Afficher "Nous rendre visite"',
+  'admin.settings.showVisitUsDesc': 'Affiche la carte d\'adresse/localisation sur la page contact.',
+  'admin.settings.showBusinessHours': 'Afficher les heures d\'ouverture',
+  'admin.settings.showBusinessHoursDesc': 'Affiche la carte des heures d\'ouverture sur la page contact.',
 
   // Settings: Social
   'admin.settings.socialTitle': 'Liens vers les réseaux sociaux',

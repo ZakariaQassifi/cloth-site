@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, Mail, Phone, MapPin, Trash2, GripVertical, Upload } from 'lucide-react';
+import { Link, Mail, Phone, MapPin, Trash2, GripVertical, Upload, Clock } from 'lucide-react';
 import { adminFetchSettings, adminUpdateSettings, adminUploadImages } from '../services/adminApi';
 import type { SiteSettingsInput } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
@@ -54,6 +54,12 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [footerImageUrl, setFooterImageUrl] = useState('');
 
+  const [businessHours, setBusinessHours] = useState('');
+  const [showEmailSupport, setShowEmailSupport] = useState(true);
+  const [showPhoneSupport, setShowPhoneSupport] = useState(true);
+  const [showVisitUs, setShowVisitUs] = useState(true);
+  const [showBusinessHours, setShowBusinessHours] = useState(true);
+
   const [uploading, setUploading] = useState(false);
 
   const loadSettings = useCallback(async () => {
@@ -69,6 +75,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
         setContactEmail(data.contactEmail || '');
         setContactPhone(data.contactPhone || '');
         setContactAddress(data.contactAddress || '');
+        setBusinessHours(data.businessHours || '');
 
         let parsedSocial: SocialLink[] = [];
         if (data.socialLinks) {
@@ -113,6 +120,11 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
         setHeroTitle(data.heroTitle || '');
         setHeroSubtitle(data.heroSubtitle || '');
         setFooterImageUrl(data.footerImageUrl || '');
+
+        setShowEmailSupport(data.showEmailSupport ?? true);
+        setShowPhoneSupport(data.showPhoneSupport ?? true);
+        setShowVisitUs(data.showVisitUs ?? true);
+        setShowBusinessHours(data.showBusinessHours ?? true);
       }
     } catch {
       setError(t('admin.settings.loadFailed'));
@@ -195,6 +207,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
       contactEmail: contactEmail || null,
       contactPhone: contactPhone || null,
       contactAddress: contactAddress || null,
+      businessHours: businessHours || null,
       socialLinks: validSocialLinks.length > 0 ? JSON.stringify(validSocialLinks) : null,
       footerLinks: validFooterLinks.length > 0 ? JSON.stringify(validFooterLinks) : null,
       metaTitle: metaTitle || null,
@@ -207,6 +220,10 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
       heroSubtitle: heroSubtitle || null,
       heroImages: validHeroImages.length > 0 ? JSON.stringify(validHeroImages) : null,
       footerImageUrl: footerImageUrl || null,
+      showEmailSupport,
+      showPhoneSupport,
+      showVisitUs,
+      showBusinessHours,
     };
 
     try {
@@ -353,6 +370,83 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
               onChange={(e) => setContactAddress(e.target.value)}
               placeholder={t('admin.settings.contactAddressPlaceholder')}
             />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="businessHours">
+              <Clock size={16} style={{ marginRight: '0.5rem', verticalAlign: 'middle' }} />
+              {t('admin.settings.businessHours')}
+            </label>
+            <textarea
+              id="businessHours"
+              className="form-input"
+              style={{ height: '80px', padding: '1rem' }}
+              value={businessHours}
+              onChange={(e) => setBusinessHours(e.target.value)}
+              placeholder={t('admin.settings.businessHoursPlaceholder')}
+            />
+          </div>
+        </div>
+
+        {/* Contact Page Management */}
+        <div className="admin-form-section">
+          <h3 className="admin-form-title">{t('admin.settings.contactPageTitle')}</h3>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            {t('admin.settings.contactPageDescription')}
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb', cursor: 'pointer' }}>
+              <div>
+                <p className="font-medium text-gray-900">{t('admin.settings.showEmailSupport')}</p>
+                <p className="text-sm text-gray-500">{t('admin.settings.showEmailSupportDesc')}</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={showEmailSupport}
+                onChange={(e) => setShowEmailSupport(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2"
+              />
+            </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb', cursor: 'pointer' }}>
+              <div>
+                <p className="font-medium text-gray-900">{t('admin.settings.showPhoneSupport')}</p>
+                <p className="text-sm text-gray-500">{t('admin.settings.showPhoneSupportDesc')}</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={showPhoneSupport}
+                onChange={(e) => setShowPhoneSupport(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2"
+              />
+            </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb', cursor: 'pointer' }}>
+              <div>
+                <p className="font-medium text-gray-900">{t('admin.settings.showVisitUs')}</p>
+                <p className="text-sm text-gray-500">{t('admin.settings.showVisitUsDesc')}</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={showVisitUs}
+                onChange={(e) => setShowVisitUs(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2"
+              />
+            </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb', cursor: 'pointer' }}>
+              <div>
+                <p className="font-medium text-gray-900">{t('admin.settings.showBusinessHours')}</p>
+                <p className="text-sm text-gray-500">{t('admin.settings.showBusinessHoursDesc')}</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={showBusinessHours}
+                onChange={(e) => setShowBusinessHours(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2"
+              />
+            </label>
           </div>
         </div>
 
