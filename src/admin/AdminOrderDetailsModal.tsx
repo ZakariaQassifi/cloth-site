@@ -39,95 +39,69 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
   const total = typeof order.totalPrice === 'number' ? order.totalPrice : subtotal + shipping;
 
   return (
-    <div className="cart-overlay open" onClick={onClose} style={{ zIndex: 1200 }}>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div
-        className="cart-drawer open"
-        style={{ maxWidth: '720px', padding: 0 }}
+        className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="admin-card__header" style={{ padding: '1.5rem' }}>
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white z-10">
           <div>
-            <h3 className="admin-card__title">{t('admin.orderDetails.title', { id: shortOrderId(order.id) })}</h3>
-            <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+            <h3 className="font-display font-semibold text-base tracking-wider uppercase text-gray-900 m-0">
+              {t('admin.orderDetails.title', { id: shortOrderId(order.id) })}
+            </h3>
+            <span className="text-xs text-gray-500 block mt-0.5">
               {t('admin.orderDetails.placedAt', { date: formatDateTime(order.createdAt) })}
             </span>
           </div>
-          <button type="button" className="header__action-btn" onClick={onClose} aria-label={t('common.close')}>
+          <button type="button" className="p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors" onClick={onClose} aria-label={t('common.close')}>
             <X size={20} />
           </button>
         </div>
 
-        <div
-          style={{
-            padding: '1.5rem',
-            overflowY: 'auto',
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
-          }}
-        >
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Customer & Order Status Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <div
-              style={{
-                background: '#f9fafb',
-                padding: '1rem',
-                borderRadius: '6px',
-                border: '1px solid #e5e7eb',
-              }}
-            >
-              <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Customer Information */}
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <h4 className="text-xs uppercase tracking-wider font-medium text-gray-500 mb-3">
                 {t('admin.orderDetails.customerInformation')}
               </h4>
-              <p style={{ fontWeight: 600, margin: '0 0 0.25rem 0' }}>{order.customerName}</p>
-              <p style={{ fontSize: '0.875rem', color: '#4b5563', margin: '0 0 0.25rem 0' }}>
-                {order.customerPhone}
-              </p>
-              <p style={{ fontSize: '0.875rem', color: '#4b5563', margin: '0 0 0.25rem 0' }}>
-                {order.customerEmail}
-              </p>
-              <p style={{ fontSize: '0.875rem', color: '#4b5563', margin: 0 }}>
+              <p className="font-semibold text-gray-900 mb-1">{order.customerName}</p>
+              <p className="text-sm text-gray-600 mb-1">{order.customerPhone}</p>
+              <p className="text-sm text-gray-600 mb-1">{order.customerEmail}</p>
+              <p className="text-sm text-gray-600 mb-1">
                 {order.customerAddress}
                 {order.customerPostalCode ? `, ${order.customerPostalCode}` : ''}, {order.customerCity}
               </p>
               {order.customerNotes && (
-                <p style={{ fontSize: '0.8125rem', color: '#92400e', marginTop: '0.5rem', marginBottom: 0 }}>
-                  <strong>{t('admin.orderDetails.notes')}</strong> {order.customerNotes}
+                <p className="text-sm text-amber-800 mt-3 mb-0">
+                  <strong className="text-amber-900">{t('admin.orderDetails.notes')}</strong> {order.customerNotes}
                 </p>
               )}
             </div>
 
-            <div
-              style={{
-                background: '#f9fafb',
-                padding: '1rem',
-                borderRadius: '6px',
-                border: '1px solid #e5e7eb',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
+            {/* Order Status & Payment */}
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 flex flex-col">
               <div>
-                <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
+                <h4 className="text-xs uppercase tracking-wider font-medium text-gray-500 mb-3">
                   {t('admin.orderDetails.orderStatusPayment')}
                 </h4>
-                <span className={`status-badge status-badge--${order.status.toLowerCase()}`}>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider status-badge status-badge--${order.status.toLowerCase()}`}>
                   {statusLabel(order.status)}
                 </span>
-                <p style={{ fontSize: '0.875rem', margin: '0.75rem 0 0.5rem 0' }}>
-                  <strong>{t('admin.orderDetails.payment')}</strong> {paymentLabel(order.paymentMethod)}
+                <p className="text-sm mt-3 mb-1">
+                  <strong className="text-gray-700">{t('admin.orderDetails.payment')}</strong> <span className="text-gray-900">{paymentLabel(order.paymentMethod)}</span>
                 </p>
-                <p style={{ fontSize: '0.875rem', margin: 0 }}>
-                  <strong>{t('admin.orderDetails.items')}</strong> {itemCount}
+                <p className="text-sm mb-0">
+                  <strong className="text-gray-700">{t('admin.orderDetails.items')}</strong> <span className="text-gray-900">{itemCount}</span>
                 </p>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
-                <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{t('common.status')}:</span>
+              <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
+                <span className="text-sm font-medium text-gray-700">{t('common.status')}:</span>
                 <select
-                  className="filter-select"
-                  style={{ height: '36px', fontSize: '0.8125rem', padding: '0 0.5rem' }}
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[36px] cursor-pointer"
                   value={order.status}
                   disabled={isUpdating}
                   aria-label={t('admin.orderDetails.changeStatus')}
@@ -145,51 +119,49 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
 
           {/* Ordered Products Table */}
           <div>
-            <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' }}>
+            <h4 className="text-xs uppercase tracking-wider font-medium text-gray-500 mb-3">
               {t('admin.orderDetails.orderedProducts')}
             </h4>
-            <div className="admin-table-wrap" style={{ border: '1px solid #e5e7eb', borderRadius: '6px' }}>
-              <table className="admin-table">
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr>
-                    <th>{t('common.product')}</th>
-                    <th>{t('common.size')}</th>
-                    <th>{t('common.color')}</th>
-                    <th>{t('common.qty')}</th>
-                    <th>{t('admin.orderDetails.unitPrice')}</th>
-                    <th>{t('common.total')}</th>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-4 py-3 text-left font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('common.product')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('common.size')}</th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('common.color')}</th>
+                    <th className="px-4 py-3 text-center font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('common.qty')}</th>
+                    <th className="px-4 py-3 text-right font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('admin.orderDetails.unitPrice')}</th>
+                    <th className="px-4 py-3 text-right font-semibold text-gray-500 uppercase tracking-wider text-xs">{t('common.total')}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-gray-100">
                   {items.length === 0 ? (
                     <tr>
-                      <td colSpan={6} style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>
+                      <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                         {t('admin.orderDetails.noItems')}
                       </td>
                     </tr>
                   ) : (
                     items.map((item) => (
-                      <tr key={item.id ?? `${item.productName}-${item.size}-${item.color}`}>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <tr key={item.id ?? `${item.productName}-${item.size}-${item.color}`} className="hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
                             <img
                               src={item.productImage}
                               alt={item.productName}
                               loading="lazy"
-                              style={{ width: '36px', height: '48px', objectFit: 'cover', borderRadius: '4px' }}
+                              className="w-9 h-12 object-cover rounded"
                             />
-                            <span style={{ fontWeight: 500 }}>{item.productName}</span>
+                            <span className="font-medium text-gray-900 truncate max-w-[200px]">{item.productName}</span>
                           </div>
                         </td>
-                        <td>{item.size}</td>
-                        <td>
+                        <td className="px-4 py-3 text-gray-900 font-medium">{item.size}</td>
+                        <td className="px-4 py-3">
                           <ColorValue color={item.color} />
                         </td>
-                        <td>{item.quantity}</td>
-                        <td style={{ whiteSpace: 'nowrap' }}>{formatMoney(item.unitPrice)}</td>
-                        <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                          {formatMoney(item.totalPrice)}
-                        </td>
+                        <td className="px-4 py-3 text-center text-gray-900 font-medium">{item.quantity}</td>
+                        <td className="px-4 py-3 text-right text-gray-900 font-medium whitespace-nowrap">{formatMoney(item.unitPrice)}</td>
+                        <td className="px-4 py-3 text-right text-gray-900 font-semibold whitespace-nowrap">{formatMoney(item.totalPrice)}</td>
                       </tr>
                     ))
                   )}
@@ -199,52 +171,27 @@ export const AdminOrderDetailsModal: React.FC<AdminOrderDetailsModalProps> = ({
           </div>
 
           {/* Totals Summary */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.5rem',
-              background: '#f9fafb',
-              padding: '1rem',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-              <span style={{ color: '#4b5563' }}>{t('common.subtotal')}</span>
-              <span style={{ fontWeight: 600 }}>{formatMoney(subtotal)}</span>
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{t('common.subtotal')}</span>
+              <span className="font-semibold text-gray-900">{formatMoney(subtotal)}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-              <span style={{ color: '#4b5563' }}>{t('common.shipping')}</span>
-              <span style={{ fontWeight: 600 }}>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">{t('common.shipping')}</span>
+              <span className="font-semibold text-gray-900">
                 {shipping === 0 ? t('admin.orderDetails.freeShipping') : formatMoney(shipping)}
               </span>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '0.9375rem',
-                fontWeight: 700,
-                paddingTop: '0.5rem',
-                borderTop: '1px solid #e5e7eb',
-              }}
-            >
-              <span>{t('common.total')}</span>
-              <span>{formatMoney(total)}</span>
+            <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200">
+              <span className="text-gray-900">{t('common.total')}</span>
+              <span className="text-gray-900">{formatMoney(total)}</span>
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            padding: '1rem 1.5rem',
-            borderTop: '1px solid #e5e7eb',
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <button type="button" className="admin-btn admin-btn--outline" onClick={onClose}>
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
+          <button type="button" className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px]" onClick={onClose}>
             {t('common.close')}
           </button>
         </div>
