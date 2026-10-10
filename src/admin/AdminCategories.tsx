@@ -163,11 +163,11 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                   return (
                     <tr key={cat.id} className={`hover:bg-gray-50 ${!isVis ? 'opacity-60' : ''}`}>
                       <td className="px-5 py-4 border-b border-gray-100">
-                        <div className="w-15 h-15 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative">
+                        <div className="w-15 h-15 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative">
                           <img 
                             src={cat.imageUrl || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'} 
                             alt={t('admin.categories.previewAlt')}
-                            className="w-full h-full object-cover" 
+                            className="w-full h-full object-cover max-w-full max-h-full" 
                           />
                         </div>
                       </td>
@@ -288,7 +288,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
                     {imageUrl ? (
-                      <img src={imageUrl} alt={t('admin.categories.previewAlt')} className="w-full h-full object-cover" />
+                      <img src={imageUrl} alt={t('admin.categories.previewAlt')} className="w-full h-full object-cover max-w-full max-h-full" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400"><Upload size={24} /></div>
                     )}
@@ -312,7 +312,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
                     {hoverImageUrl ? (
-                      <img src={hoverImageUrl} alt={t('admin.categories.hoverPreviewAlt')} className="w-full h-full object-cover" />
+                      <img src={hoverImageUrl} alt={t('admin.categories.hoverPreviewAlt')} className="w-full h-full object-cover max-w-full max-h-full" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400"><Upload size={24} /></div>
                     )}
