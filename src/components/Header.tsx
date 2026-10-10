@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
-import { useCategories } from '../context/useCatalog';
-import { fetchSettings } from '../services/catalogService';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Search, User, Heart, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
+import { fetchCategories, fetchSettings } from '../services/catalogService';
 import { useTranslation } from '../i18n/useI18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import './Header.css';
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export interface HeaderProps {
   cartCount?: number;
@@ -29,10 +34,25 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [brandName, setBrandName] = useState('KINETIC');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
-  // Categories come from the shared catalog so the nav can never drift from
-  // what the API actually serves.
-  const categories = useCategories();
+  const loadCategories = useCallback(async () => {
+    try {
+      const res = await fetchCategories();
+      if (res.success && res.data) {
+        setCategories(res.data);
+      }
+    } catch {
+      console.warn('Failed to load categories');
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   const loadSettings = useCallback(async () => {
     try {
@@ -55,20 +75,31 @@ export const Header: React.FC<HeaderProps> = ({
     loadSettings();
   }, [loadSettings]);
 
-  const handleNavClick = (category: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    onSelectCategory?.(category);
-    setMobileMenuOpen(false);
-  };
-
   const handleSpecialClick = (filter: 'sale' | 'new' | 'all', e: React.MouseEvent) => {
     e.preventDefault();
     onSelectSpecialFilter?.(filter);
     setMobileMenuOpen(false);
+    setCategoriesOpen(false);
+    setMobileCategoriesOpen(false);
   };
 
-  const mainNavItems = categories.slice(0, 5);
-  const otherItems = categories.slice(5);
+  const handleCategoryClick = (categoryName: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    onSelectCategory?.(categoryName);
+    setCategoriesOpen(false);
+    setMobileCategoriesOpen(false);
+  };
+
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (categoriesRef.current && !categoriesRef.current.contains(e.target as Node)) {
+      setCategoriesOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
 
   const renderBrand = () => {
     if (logoUrl) {
@@ -116,32 +147,42 @@ export const Header: React.FC<HeaderProps> = ({
               <a href="#" className="header__nav-link" onClick={(e) => handleSpecialClick('new', e)}>{t('nav.new')}</a>
             </div>
 
-            {mainNavItems.map((cat) => (
-              <div key={cat.id} className="header__nav-item">
-                <a href="#" className="header__nav-link" onClick={(e) => handleNavClick(cat.name, e)}>
-                  {cat.name.toUpperCase()}
-                </a>
-              </div>
-            ))}
-
-            {otherItems.length > 0 && (
-              <div className="header__nav-item">
-                <a href="#" className="header__nav-link">{t('nav.more')}</a>
-                <div className="mega-menu" style={{ width: 'auto', minWidth: '200px', left: 'auto' }}>
-                  <div className="mega-menu__container" style={{ display: 'block', padding: '1rem' }}>
-                    <ul className="mega-menu__list">
-                      {otherItems.map((cat) => (
-                        <li key={cat.id}>
-                          <a href="#" className="mega-menu__link" onClick={(e) => handleNavClick(cat.name, e)}>
-                            {cat.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+            {/* Categories Dropdown */}
+            <div className="header__nav-item header__categories-dropdown" ref={categoriesRef}>
+              <button
+                type="button"
+                className="header__nav-link header__categories-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCategoriesOpen(!categoriesOpen);
+                }}
+                aria-haspopup="true"
+                aria-expanded={categoriesOpen}
+              >
+                <span>{t('nav.categories')}</span>
+                <ChevronDown size={14} className={`header__categories-chevron ${categoriesOpen ? 'open' : ''}`} />
+              </button>
+              {categoriesOpen && (
+                <div className="header__categories-menu" role="menu">
+                  <div className="header__categories-menu-inner">
+                    {categories.map((cat) => (
+                      <a
+                        key={cat.id}
+                        href="#"
+                        className="header__categories-link"
+                        role="menuitem"
+                        onClick={(e) => handleCategoryClick(cat.name, e)}
+                      >
+                        {cat.name}
+                      </a>
+                    ))}
+                    {categories.length === 0 && (
+                      <span className="header__categories-empty">{t('nav.noCategories')}</span>
+                    )}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="header__nav-item">
               <a href="#" className="header__nav-link" onClick={(e) => handleSpecialClick('sale', e)} style={{ color: '#e11d48' }}>{t('nav.sale')}</a>
@@ -214,13 +255,34 @@ export const Header: React.FC<HeaderProps> = ({
               </a>
             </li>
 
-            {categories.map((cat) => (
-              <li key={cat.id} className="mobile-nav-item">
-                <a href="#" className="mobile-nav-link" onClick={(e) => handleNavClick(cat.name, e)}>
-                  {cat.name.toUpperCase()}
-                </a>
-              </li>
-            ))}
+            {/* Mobile Categories Dropdown */}
+            <li className="mobile-nav-item">
+              <button
+                type="button"
+                className="mobile-nav-link mobile-categories-toggle"
+                onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0 }}
+              >
+                <span>{t('nav.categories')}</span>
+                <ChevronDown size={16} className={`mobile-categories-chevron ${mobileCategoriesOpen ? 'open' : ''}`} />
+              </button>
+              {mobileCategoriesOpen && (
+                <ul className="mobile-categories-submenu" role="menu">
+                  {categories.map((cat) => (
+                    <li key={cat.id} className="mobile-categories-subitem">
+                      <a href="#" className="mobile-categories-sublink" role="menuitem" onClick={(e) => handleCategoryClick(cat.name, e)}>
+                        {cat.name}
+                      </a>
+                    </li>
+                  ))}
+                  {categories.length === 0 && (
+                    <li className="mobile-categories-subitem">
+                      <span className="mobile-categories-sublink text-gray-500">{t('nav.noCategories')}</span>
+                    </li>
+                  )}
+                </ul>
+              )}
+            </li>
 
             <li className="mobile-nav-item">
               <a href="#" className="mobile-nav-link" style={{ color: '#e11d48' }} onClick={(e) => handleSpecialClick('sale', e)}>

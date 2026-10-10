@@ -43,9 +43,11 @@ export const fr: Dictionary = {
 
   // --------------------------------------------------------------- header
   'nav.new': 'NOUVEAUTÉS',
+  'nav.categories': 'CATÉGORIES',
   'nav.more': 'PLUS',
   'nav.sale': 'SOLDES',
   'nav.contact': 'CONTACT',
+  'nav.noCategories': 'Aucune catégorie disponible',
   'nav.mainNavigation': 'Navigation principale',
   'nav.openMenu': 'Ouvrir le menu',
   'nav.closeMenu': 'Fermer le menu',

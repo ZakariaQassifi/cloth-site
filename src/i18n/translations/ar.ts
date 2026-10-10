@@ -44,9 +44,11 @@ export const ar: Dictionary = {
 
   // --------------------------------------------------------------- header
   'nav.new': 'وصل حديثاً',
+  'nav.categories': 'الفئات',
   'nav.more': 'المزيد',
   'nav.sale': 'التخفيضات',
   'nav.contact': 'اتصل بنا',
+  'nav.noCategories': 'لا توجد فئات متاحة',
   'nav.mainNavigation': 'التنقل الرئيسي',
   'nav.openMenu': 'فتح القائمة',
   'nav.closeMenu': 'إغلاق القائمة',

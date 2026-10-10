@@ -42,9 +42,11 @@ export const en = {
 
   // --------------------------------------------------------------- header
   'nav.new': 'NEW',
+  'nav.categories': 'CATEGORIES',
   'nav.more': 'MORE',
   'nav.sale': 'SALE',
   'nav.contact': 'CONTACT',
+  'nav.noCategories': 'No categories available',
   'nav.mainNavigation': 'Main Navigation',
   'nav.openMenu': 'Open menu',
   'nav.closeMenu': 'Close menu',
