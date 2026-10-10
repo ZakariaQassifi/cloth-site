@@ -8,7 +8,6 @@ import {
 } from '../services/adminApi';
 import type { Category, CategoryInput } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
-import './AdminLayout.css';
 
 export interface AdminCategoriesProps {
   categories: Category[];
@@ -129,70 +128,67 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
 
   return (
     <div>
-      <div className="admin-card">
-        <div className="admin-card__header">
-          <h3 className="admin-card__title">{t('admin.categories.title')}</h3>
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="px-5 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="font-display font-semibold text-base tracking-wider uppercase text-gray-900 m-0">{t('admin.categories.title')}</h3>
           <button
             type="button"
-            className="admin-btn"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg bg-gray-900 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px]"
             onClick={handleOpenAdd}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
           >
             <Plus size={16} /> {t('admin.categories.add')}
           </button>
         </div>
 
-        <div className="admin-table-wrap">
-          <table className="admin-table">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm min-w-[700px]">
             <thead>
               <tr>
-                <th>{t('admin.categories.preview')}</th>
-                <th>{t('admin.categories.categoryName')}</th>
-                <th>{t('admin.products.visibility')}</th>
-                <th>{t('admin.categories.order')}</th>
-                <th>{t('admin.categories.products')}</th>
-                <th>{t('admin.categories.actions')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.categories.preview')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.categories.categoryName')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.products.visibility')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.categories.order')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.categories.products')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.categories.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {categories.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', color: '#6b7280', padding: '3rem' }}>
-                    {t('admin.categories.noCategories')}
-                  </td>
+                  <td colSpan={6} className="text-center text-gray-500 py-12">{t('admin.categories.noCategories')}</td>
                 </tr>
               ) : (
                 categories.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)).map((cat) => {
                   const isVis = cat.isVisible !== false;
                   return (
-                    <tr key={cat.id} style={{ opacity: isVis ? 1 : 0.6 }}>
-                      <td>
-                        <div style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#f3f4f6', border: '1px solid #e5e7eb' }}>
+                    <tr key={cat.id} className={`hover:bg-gray-50 ${!isVis ? 'opacity-60' : ''}`}>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <div className="w-15 h-15 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative">
                           <img 
                             src={cat.imageUrl || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'} 
                             alt={t('admin.categories.previewAlt')}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                            className="w-full h-full object-cover" 
                           />
                         </div>
                       </td>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{cat.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>/{cat.slug}</div>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <div className="font-semibold">{cat.name}</div>
+                        <div className="text-sm text-gray-500">/{cat.slug}</div>
                       </td>
-                      <td>
-                        <span className={`status-badge ${isVis ? 'status-badge--delivered' : 'status-badge--cancelled'}`}>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider ${isVis ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                           {isVis ? t('admin.products.visible') : t('admin.products.hidden')}
                         </span>
                       </td>
-                      <td>
-                        <span style={{ fontWeight: 600 }}>#{cat.displayOrder || 0}</span>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <span className="font-semibold">#{cat.displayOrder || 0}</span>
                       </td>
-                      <td>{t('admin.categories.itemCount', { count: cat._count ? cat._count.products : 0 })}</td>
-                      <td>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <td className="px-5 py-4 border-b border-gray-100">{t('admin.categories.itemCount', { count: cat._count ? cat._count.products : 0 })}</td>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            className="admin-btn admin-btn--outline"
+                            className="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors min-h-[44px] min-w-[44px]"
                             onClick={() => handleToggleVisibility(cat)}
                             title={isVis ? t('admin.categories.hide') : t('admin.categories.show')}
                           >
@@ -200,7 +196,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                           </button>
                           <button
                             type="button"
-                            className="admin-btn admin-btn--outline"
+                            className="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors min-h-[44px] min-w-[44px]"
                             onClick={() => handleOpenEdit(cat)}
                             title={t('admin.categories.editContent')}
                           >
@@ -208,7 +204,7 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                           </button>
                           <button
                             type="button"
-                            className="admin-btn admin-btn--danger"
+                            className="inline-flex items-center justify-center p-2 rounded-lg bg-red-100 text-red-800 border border-red-200 hover:bg-red-200 transition-colors min-h-[44px] min-w-[44px]"
                             onClick={() => handleDelete(cat.id, cat.name)}
                             title={t('admin.categories.delete')}
                           >
@@ -227,33 +223,32 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
 
       {/* Category Modal */}
       {isModalOpen && (
-        <div className="cart-overlay open" onClick={() => setIsModalOpen(false)} style={{ zIndex: 1200 }}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div
-            className="cart-drawer open"
-            style={{ maxWidth: '500px', padding: 0 }}
+            className="bg-white rounded-xl shadow-xl max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="admin-card__header" style={{ padding: '1.5rem' }}>
-              <h3 className="admin-card__title">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white z-10">
+              <h3 className="font-display font-semibold text-base tracking-wider uppercase text-gray-900 m-0">
                 {editingCategory ? t('admin.categories.editTitle') : t('admin.categories.addTitle')}
               </h3>
-              <button type="button" className="header__action-btn" onClick={() => setIsModalOpen(false)}>
+              <button type="button" className="p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setIsModalOpen(false)}>
                 <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', overflowY: 'auto', flex: 1 }}>
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
               {error && (
-                <div style={{ padding: '0.75rem', backgroundColor: '#ffe4e6', color: '#9f1239', fontSize: '0.875rem' }}>
+                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
                   {error}
                 </div>
               )}
               
-              <div className="form-group">
-                <label className="form-label">{t('admin.categories.nameLabel')}</label>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-gray-700">{t('admin.categories.nameLabel')}</label>
                 <input
                   type="text"
-                  className="form-input"
+                  className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -264,11 +259,11 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">{t('admin.categories.slugLabel')}</label>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-gray-700">{t('admin.categories.slugLabel')}</label>
                 <input
                   type="text"
-                  className="form-input"
+                  className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder={t('admin.categories.slugPlaceholder')}
@@ -276,11 +271,11 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">{t('admin.categories.displayOrder')}</label>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-gray-700">{t('admin.categories.displayOrder')}</label>
                 <input
                   type="number"
-                  className="form-input"
+                  className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]"
                   value={displayOrder}
                   onChange={(e) => setDisplayOrder(Number(e.target.value))}
                   placeholder="0"
@@ -288,18 +283,21 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
               </div>
 
               {/* Main Image */}
-              <div className="form-group">
-                <label className="form-label">{t('admin.categories.mainImage')}</label>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ width: '80px', height: '80px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#f3f4f6', flexShrink: 0 }}>
-                    {imageUrl ? <img src={imageUrl} alt={t('admin.categories.previewAlt')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}><Upload size={20} /></div>}
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-gray-700">{t('admin.categories.mainImage')}</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={t('admin.categories.previewAlt')} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400"><Upload size={24} /></div>
+                    )}
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <input type="file" onChange={(e) => handleFileUpload(e, 'main')} style={{ fontSize: '0.75rem' }} disabled={uploading} />
+                  <div className="flex-1 space-y-2">
+                    <input type="file" onChange={(e) => handleFileUpload(e, 'main')} className="text-sm" disabled={uploading} />
                     <input 
                       type="url" 
-                      className="form-input" 
-                      style={{ marginTop: '0.5rem', height: '36px' }} 
+                      className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]" 
                       value={imageUrl} 
                       onChange={(e) => setImageUrl(e.target.value)} 
                       placeholder={t('admin.categories.pasteUrl')} 
@@ -309,18 +307,21 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
               </div>
 
               {/* Hover Image */}
-              <div className="form-group">
-                <label className="form-label">{t('admin.categories.hoverImage')}</label>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ width: '80px', height: '80px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#f3f4f6', flexShrink: 0 }}>
-                    {hoverImageUrl ? <img src={hoverImageUrl} alt={t('admin.categories.hoverPreviewAlt')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}><Upload size={20} /></div>}
+              <div className="space-y-1.5">
+                <label className="block text-sm font-medium text-gray-700">{t('admin.categories.hoverImage')}</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                    {hoverImageUrl ? (
+                      <img src={hoverImageUrl} alt={t('admin.categories.hoverPreviewAlt')} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400"><Upload size={24} /></div>
+                    )}
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <input type="file" onChange={(e) => handleFileUpload(e, 'hover')} style={{ fontSize: '0.75rem' }} disabled={uploading} />
+                  <div className="flex-1 space-y-2">
+                    <input type="file" onChange={(e) => handleFileUpload(e, 'hover')} className="text-sm" disabled={uploading} />
                     <input 
                       type="url" 
-                      className="form-input" 
-                      style={{ marginTop: '0.5rem', height: '36px' }} 
+                      className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]" 
                       value={hoverImageUrl} 
                       onChange={(e) => setHoverImageUrl(e.target.value)} 
                       placeholder={t('admin.categories.hoverUrlPlaceholder')} 
@@ -329,23 +330,23 @@ export const AdminCategories: React.FC<AdminCategoriesProps> = ({ categories, on
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem' }}>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-2 cursor-pointer text-sm font-medium">
                   <input
                     type="checkbox"
                     checked={isVisible}
                     onChange={(e) => setIsVisible(e.target.checked)}
-                    style={{ width: '18px', height: '18px' }}
+                    className="w-5 h-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
                   />
                   {t('admin.categories.visibleOnStorefront')}
                 </label>
               </div>
 
-              <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                <button type="button" className="admin-btn admin-btn--outline" style={{ flex: 1 }} onClick={() => setIsModalOpen(false)}>
+              <div className="flex gap-3 pt-4 border-t border-gray-200">
+                <button type="button" className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px] flex-1" onClick={() => setIsModalOpen(false)}>
                   {t('admin.categories.cancel')}
                 </button>
-                <button type="submit" className="admin-btn" style={{ flex: 1 }} disabled={uploading}>
+                <button type="submit" className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg bg-gray-900 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px] flex-1" disabled={uploading}>
                   {editingCategory ? t('admin.categories.update') : t('admin.categories.create')}
                 </button>
               </div>

@@ -4,7 +4,6 @@ import { isHexColor, ORDER_STATUSES, shortOrderId } from '../data/order';
 import { useTranslation } from '../i18n/useI18n';
 import { useOrderStatusLabel, usePaymentLabel } from '../i18n/hooks';
 import type { AdminOrder, OrderStatus } from '../types/api';
-import './AdminLayout.css';
 
 export interface AdminOrdersProps {
   orders: AdminOrder[];
@@ -52,14 +51,14 @@ export const AdminOrders: React.FC<AdminOrdersProps> = ({
 
   return (
     <div>
-      <div className="admin-card">
-        <div className="admin-card__header" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-          <h3 className="admin-card__title">{t('admin.orders.title', { count: filteredOrders.length })}</h3>
-          <div className="filter-search" style={{ maxWidth: '300px' }}>
-            <Search size={16} className="filter-search__icon" />
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="px-5 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="font-display font-semibold text-base tracking-wider uppercase text-gray-900 m-0">{t('admin.orders.title', { count: filteredOrders.length })}</h3>
+          <div className="relative max-w-xs w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
             <input
               type="text"
-              className="filter-search__input"
+              className="w-full pl-10 px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[44px]"
               placeholder={t('admin.orders.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -67,39 +66,49 @@ export const AdminOrders: React.FC<AdminOrdersProps> = ({
           </div>
         </div>
 
-        <div className="admin-order-filters">
+        <div className="px-5 py-4 flex flex-wrap gap-2 border-b border-gray-200">
           {STATUS_FILTERS.map((filter) => (
             <button
               key={filter}
               type="button"
-              className={`admin-chip ${statusFilter === filter ? 'active' : ''}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 border rounded-full text-sm font-semibold cursor-pointer transition-all duration-150 ${
+                statusFilter === filter
+                  ? 'bg-gray-900 border-gray-900 text-white'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
+              }`}
               onClick={() => setStatusFilter(filter)}
             >
               {filter === 'ALL' ? t('admin.orders.filterAll') : statusLabel(filter)}
-              <span className="admin-chip__count">{countFor(filter)}</span>
+              <span className={`inline-flex items-center justify-center min-w-5 px-1.5 rounded-full text-[0.625rem] font-medium ${
+                statusFilter === filter
+                  ? 'bg-gray-700 text-gray-100'
+                  : 'bg-gray-100 text-gray-500'
+              }`}>
+                {countFor(filter)}
+              </span>
             </button>
           ))}
         </div>
 
-        <div className="admin-table-wrap">
-          <table className="admin-table">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm min-w-[1000px]">
             <thead>
               <tr>
-                <th>{t('admin.orders.orderId')}</th>
-                <th>{t('admin.dashboard.customer')}</th>
-                <th>{t('admin.orders.address')}</th>
-                <th>{t('admin.orders.products')}</th>
-                <th>{t('common.total')}</th>
-                <th>{t('admin.orders.payment')}</th>
-                <th>{t('common.status')}</th>
-                <th>{t('common.date')}</th>
-                <th>{t('common.actions')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.orders.orderId')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.dashboard.customer')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.orders.address')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.orders.products')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.total')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.orders.payment')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.status')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.date')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} style={{ textAlign: 'center', color: '#6b7280', padding: '3rem' }}>
+                  <td colSpan={9} className="text-center text-gray-500 py-12">
                     {orders.length === 0 ? t('admin.orders.noOrders') : t('admin.orders.noMatch')}
                   </td>
                 </tr>
@@ -108,37 +117,29 @@ export const AdminOrders: React.FC<AdminOrdersProps> = ({
                   const itemCount = (order.items ?? []).reduce((sum, i) => sum + i.quantity, 0);
                   const isUpdating = updatingOrderId === order.id;
                   return (
-                    <tr key={order.id}>
-                      <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                        #{shortOrderId(order.id)}
+                    <tr key={order.id} className="hover:bg-gray-50">
+                      <td className="px-5 py-4 border-b border-gray-100 font-semibold whitespace-nowrap">#{shortOrderId(order.id)}</td>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <div className="font-semibold">{order.customerName}</div>
+                        <div className="text-sm text-gray-500">{order.customerPhone}</div>
                       </td>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{order.customerName}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{order.customerPhone}</div>
+                      <td className="px-5 py-4 border-b border-gray-100 max-w-[220px]">
+                        <div className="text-sm">{order.customerAddress}</div>
+                        <div className="text-sm text-gray-500">{order.customerCity}</div>
                       </td>
-                      <td style={{ maxWidth: '220px' }}>
-                        <div style={{ fontSize: '0.8125rem' }}>{order.customerAddress}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{order.customerCity}</div>
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>{t('common.items', { count: itemCount })}</td>
-                      <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                        {formatMoney(order.totalPrice)}
-                      </td>
-                      <td style={{ fontSize: '0.8125rem' }}>
-                        {paymentLabel(order.paymentMethod)}
-                      </td>
-                      <td>
-                        <span className={`status-badge status-badge--${order.status.toLowerCase()}`}>
+                      <td className="px-5 py-4 border-b border-gray-100 whitespace-nowrap">{t('common.items', { count: itemCount })}</td>
+                      <td className="px-5 py-4 border-b border-gray-100 font-semibold whitespace-nowrap">{formatMoney(order.totalPrice)}</td>
+                      <td className="px-5 py-4 border-b border-gray-100 text-sm">{paymentLabel(order.paymentMethod)}</td>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider status-badge--${order.status.toLowerCase()}`}>
                           {statusLabel(order.status)}
                         </span>
                       </td>
-                      <td style={{ fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
-                        {formatDate(order.createdAt)}
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <td className="px-5 py-4 border-b border-gray-100 text-sm whitespace-nowrap">{formatDate(order.createdAt)}</td>
+                      <td className="px-5 py-4 border-b border-gray-100">
+                        <div className="flex items-center gap-2">
                           <select
-                            className="filter-select"
+                            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-h-[34px] cursor-pointer"
                             style={{ height: '34px', fontSize: '0.8125rem', padding: '0 0.5rem' }}
                             value={order.status}
                             disabled={isUpdating}
@@ -153,7 +154,7 @@ export const AdminOrders: React.FC<AdminOrdersProps> = ({
                           </select>
                           <button
                             type="button"
-                            className="admin-btn admin-btn--outline"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px]"
                             onClick={() => onViewOrder(order)}
                           >
                             {t('common.view')}
@@ -176,17 +177,11 @@ export const AdminOrders: React.FC<AdminOrdersProps> = ({
 export const ColorValue: React.FC<{ color: string }> = ({ color }) => {
   if (!isHexColor(color)) return <span>{color}</span>;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+    <span className="inline-flex items-center gap-1">
       <span
         aria-hidden="true"
-        style={{
-          width: '12px',
-          height: '12px',
-          borderRadius: '50%',
-          background: color,
-          border: '1px solid #d1d5db',
-          display: 'inline-block',
-        }}
+        className="w-3 h-3 rounded-full border border-gray-300"
+        style={{ background: color }}
       />
       {color}
     </span>

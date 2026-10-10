@@ -2,7 +2,6 @@ import React from 'react';
 import type { AdminOrder, AdminStats } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
 import { useOrderStatusLabel } from '../i18n/hooks';
-import './AdminLayout.css';
 
 export interface AdminDashboardProps {
   stats: AdminStats;
@@ -15,66 +14,64 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats, onViewOrd
 
   return (
     <div>
-      <div className="admin-stats-grid">
-        <div className="admin-stat-card">
-          <span className="admin-stat-card__label">{t('admin.stats.totalProducts')}</span>
-          <span className="admin-stat-card__value">{stats.totalProducts}</span>
+      <div className="grid gap-4 mb-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col gap-2">
+          <span className="text-xs uppercase tracking-wider font-medium text-gray-500">{t('admin.stats.totalProducts')}</span>
+          <span className="font-display text-2xl font-bold text-gray-900">{stats.totalProducts}</span>
         </div>
-        <div className="admin-stat-card">
-          <span className="admin-stat-card__label">{t('admin.stats.totalOrders')}</span>
-          <span className="admin-stat-card__value">{stats.totalOrders}</span>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col gap-2">
+          <span className="text-xs uppercase tracking-wider font-medium text-gray-500">{t('admin.stats.totalOrders')}</span>
+          <span className="font-display text-2xl font-bold text-gray-900">{stats.totalOrders}</span>
         </div>
-        <div className="admin-stat-card">
-          <span className="admin-stat-card__label">{t('admin.stats.pendingOrders')}</span>
-          <span className="admin-stat-card__value">{stats.pendingOrders}</span>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col gap-2">
+          <span className="text-xs uppercase tracking-wider font-medium text-gray-500">{t('admin.stats.pendingOrders')}</span>
+          <span className="font-display text-2xl font-bold text-gray-900">{stats.pendingOrders}</span>
         </div>
-        <div className="admin-stat-card">
-          <span className="admin-stat-card__label">{t('admin.stats.totalSales')}</span>
-          <span className="admin-stat-card__value">{formatMoney(stats.totalSales)}</span>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col gap-2">
+          <span className="text-xs uppercase tracking-wider font-medium text-gray-500">{t('admin.stats.totalSales')}</span>
+          <span className="font-display text-2xl font-bold text-gray-900">{formatMoney(stats.totalSales)}</span>
         </div>
       </div>
 
-      <div className="admin-card">
-        <div className="admin-card__header">
-          <h3 className="admin-card__title">{t('admin.dashboard.recentOrders')}</h3>
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="px-5 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="font-display font-semibold text-base tracking-wider uppercase text-gray-900 m-0">{t('admin.dashboard.recentOrders')}</h3>
         </div>
-        <div className="admin-table-wrap">
-          <table className="admin-table">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm min-w-[700px]">
             <thead>
               <tr>
-                <th>{t('admin.orders.orderId')}</th>
-                <th>{t('admin.dashboard.customer')}</th>
-                <th>{t('admin.dashboard.phone')}</th>
-                <th>{t('common.total')}</th>
-                <th>{t('common.status')}</th>
-                <th>{t('common.date')}</th>
-                <th>{t('common.action')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.orders.orderId')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.dashboard.customer')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('admin.dashboard.phone')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.total')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.status')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.date')}</th>
+                <th className="bg-gray-50 px-5 py-3.5 font-semibold text-gray-500 border-b border-gray-200 uppercase tracking-wider text-xs">{t('common.action')}</th>
               </tr>
             </thead>
             <tbody>
               {stats.recentOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', color: '#6b7280', padding: '3rem' }}>
-                    {t('admin.dashboard.noRecentOrders')}
-                  </td>
+                  <td colSpan={7} className="text-center text-gray-500 py-12">{t('admin.dashboard.noRecentOrders')}</td>
                 </tr>
               ) : (
                 stats.recentOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td style={{ fontWeight: 600 }}>#{order.id.slice(0, 8).toUpperCase()}</td>
-                    <td>{order.customerName}</td>
-                    <td>{order.customerPhone}</td>
-                    <td style={{ fontWeight: 600 }}>{formatMoney(order.totalPrice)}</td>
-                    <td>
-                      <span className={`status-badge status-badge--${order.status.toLowerCase()}`}>
+                  <tr key={order.id} className="hover:bg-gray-50">
+                    <td className="px-5 py-4 border-b border-gray-100 font-semibold">#{order.id.slice(0, 8).toUpperCase()}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">{order.customerName}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">{order.customerPhone}</td>
+                    <td className="px-5 py-4 border-b border-gray-100 font-semibold">{formatMoney(order.totalPrice)}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wider status-badge--${order.status.toLowerCase()}`}>
                         {statusLabel(order.status)}
                       </span>
                     </td>
-                    <td>{formatDate(order.createdAt)}</td>
-                    <td>
+                    <td className="px-5 py-4 border-b border-gray-100">{formatDate(order.createdAt)}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">
                       <button
                         type="button"
-                        className="admin-btn admin-btn--outline"
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px]"
                         onClick={() => onViewOrder(order)}
                       >
                         {t('common.view')}

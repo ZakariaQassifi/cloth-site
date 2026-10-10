@@ -22,7 +22,6 @@ import { ADMIN_LOGIN_PATH, navigate } from '../routing/routes';
 import type { AdminOrder, AdminProduct, AdminStats, OrderStatus } from '../types/api';
 import { useTranslation } from '../i18n/useI18n';
 import type { TranslationKey } from '../i18n/translations/en';
-import './AdminLayout.css';
 
 /** Sidebar tab ids mapped to their labels so the topbar title is translated too. */
 const ADMIN_TAB_KEYS: Record<AdminTab, TranslationKey> = {
@@ -225,8 +224,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
   // expired session never flashes protected content on the way to the login page.
   if (phase === 'checking') {
     return (
-      <div className="admin-loading-screen">
-        <div className="admin-loading-screen__text">{t('admin.loadingDashboard')}</div>
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <div className="text-gray-600 font-medium">{t('admin.loadingDashboard')}</div>
       </div>
     );
   }
@@ -238,21 +237,28 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
   }
 
   return (
-    <div className="admin-layout">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Mobile Sidebar Overlay */}
       <div
-        className={`admin-sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-30 transition-opacity md:hidden ${
+          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={() => setSidebarOpen(false)}
         aria-hidden="true"
       />
 
       {/* Sidebar */}
-      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`} aria-label={t('admin.nav.mainNavigation')}>
-        <div className="admin-sidebar__brand">
-          <span>{t('admin.brand')}</span>
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        aria-label={t('admin.nav.mainNavigation')}
+      >
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 sticky top-0 bg-white z-10">
+          <span className="font-display font-semibold text-lg tracking-wider uppercase">{t('admin.brand')}</span>
           <button
             type="button"
-            className="admin-mobile-toggle"
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
             onClick={() => setSidebarOpen(false)}
             aria-label={t('admin.closeSidebar')}
           >
@@ -260,45 +266,69 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
           </button>
         </div>
 
-        <nav className="admin-sidebar__nav">
+        <nav className="px-4 py-6 flex-1 flex flex-col gap-2 overflow-y-auto">
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'dashboard'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('dashboard'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <LayoutDashboard size={18} /> {t('admin.nav.dashboard')}
           </button>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'products' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'products'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('products'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <Package size={18} /> {t('admin.nav.products')}
           </button>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'categories' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'categories'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('categories'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <Tag size={18} /> {t('admin.nav.categories')}
           </button>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'orders'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('orders'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <ShoppingCart size={18} /> {t('admin.nav.orders')}
           </button>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'customers' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'customers'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('customers'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <Users size={18} /> {t('admin.nav.customers')}
           </button>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'settings'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
             onClick={() => { setActiveTab('settings'); setProductViewMode('list'); setSidebarOpen(false); }}
           >
             <Settings size={18} /> {t('admin.nav.settings')}
@@ -308,7 +338,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
         <div className="p-4 border-t border-gray-200">
           <button
             type="button"
-            className="admin-nav-item w-full justify-center text-red-700 hover:bg-red-50"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 w-full justify-center transition-colors"
             onClick={handleLogout}
           >
             <LogOut size={18} /> {t('admin.nav.logout')}
@@ -317,28 +347,28 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
       </aside>
 
       {/* Main Area */}
-      <div className="admin-main">
+      <div className="flex-1 flex flex-col min-w-0 md:ml-64">
         {/* Top Navbar */}
-        <header className="admin-topbar">
-          <div className="admin-topbar__left">
+        <header className="sticky top-0 z-30 h-16 bg-white border-b border-gray-200 px-4 md:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <button
               type="button"
-              className="admin-mobile-toggle"
+              className="md:hidden p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
               onClick={() => setSidebarOpen(true)}
               aria-label={t('admin.openSidebar')}
             >
               <Menu size={24} />
             </button>
-            <h1 className="admin-topbar__title">
+            <h1 className="font-display font-semibold text-lg tracking-wider uppercase text-gray-900 m-0">
               {activeTab === 'products' && productViewMode !== 'list'
                 ? `${t(productViewMode === 'add' ? 'admin.tabAddProduct' : 'admin.tabEditProduct')}`
                 : t(ADMIN_TAB_KEYS[activeTab])}
             </h1>
           </div>
-          <div className="admin-topbar__right">
+          <div className="flex items-center gap-4">
             <button
               type="button"
-              className="admin-storefront-link"
+              className="inline-flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-gray-600 hover:text-gray-900 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100"
               onClick={onReturnToStore}
             >
               <ArrowLeft size={16} /> {t('admin.exitToStore')}
@@ -347,16 +377,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
         </header>
 
         {/* Content */}
-        <main className="admin-content">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '5rem', color: '#6b7280' }}>
+            <div className="text-center py-20 text-gray-500">
               {t('admin.loadingDashboard')}
             </div>
           ) : error ? (
-            <div style={{ padding: '2rem', backgroundColor: '#fee2e2', color: '#991b1b', borderRadius: '8px' }}>
-              <strong>{t('admin.errorPrefix')}</strong> {error}
-              <div style={{ marginTop: '1rem' }}>
-                <button type="button" className="admin-btn" onClick={() => void applyStats()}>
+            <div className="p-6 bg-red-50 text-red-800 rounded-xl border border-red-200">
+              <strong className="block mb-2">{t('admin.errorPrefix')}</strong> {error}
+              <div className="mt-4">
+                <button type="button" className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-lg bg-gray-900 text-white hover:bg-gray-800 focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 min-h-[44px]" onClick={() => void applyStats()}>
                   {t('common.retry')}
                 </button>
               </div>
@@ -396,8 +426,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
                 />
               )}
               {activeTab === 'customers' && (
-                <div className="admin-card" style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
-                  <h3>{t('admin.customers.title')}</h3>
+                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6 p-12 text-center text-gray-500">
+                  <h3 className="font-display font-semibold text-lg tracking-wider uppercase mb-2">{t('admin.customers.title')}</h3>
                   <p>{t('admin.customers.desc')}</p>
                 </div>
               )}
