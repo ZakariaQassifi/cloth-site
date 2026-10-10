@@ -239,14 +239,22 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
 
   return (
     <div className="admin-layout">
+      {/* Mobile Sidebar Overlay */}
+      <div
+        className={`admin-sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+
       {/* Sidebar */}
-      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`} aria-label={t('admin.nav.mainNavigation')}>
         <div className="admin-sidebar__brand">
           <span>{t('admin.brand')}</span>
           <button
             type="button"
             className="admin-mobile-toggle"
             onClick={() => setSidebarOpen(false)}
+            aria-label={t('admin.closeSidebar')}
           >
             <X size={20} />
           </button>
@@ -297,12 +305,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
           </button>
         </nav>
 
-        <div style={{ padding: '1rem', borderTop: '1px solid #e5e7eb' }}>
+        <div className="p-4 border-t border-gray-200">
           <button
             type="button"
-            className="admin-nav-item"
+            className="admin-nav-item w-full justify-center text-red-700 hover:bg-red-50"
             onClick={handleLogout}
-            style={{ color: '#991b1b' }}
           >
             <LogOut size={18} /> {t('admin.nav.logout')}
           </button>
@@ -333,9 +340,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
               type="button"
               className="admin-storefront-link"
               onClick={onReturnToStore}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
-              <ArrowLeft size={16} className="admin-exit-icon" /> {t('admin.exitToStore')}
+              <ArrowLeft size={16} /> {t('admin.exitToStore')}
             </button>
           </div>
         </header>
