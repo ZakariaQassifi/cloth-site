@@ -5,12 +5,6 @@ import { fetchSettings } from '../services/catalogService';
 import { useTranslation } from '../i18n/useI18n';
 import './Hero.css';
 
-const DEFAULT_HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=2000',
-  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=2000',
-  'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=2000',
-];
-
 export interface HeroProps {
   onShopMen?: () => void;
   onShopWomen?: () => void;
@@ -22,9 +16,10 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_HERO_IMAGES);
+  const [heroImages, setHeroImages] = useState<string[]>([]);
   const [heroTitle, setHeroTitle] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const loadSettings = useCallback(async () => {
     try {
@@ -40,7 +35,7 @@ export const Hero: React.FC<HeroProps> = ({
               setHeroImages(parsed.filter((img: string) => img && img.trim()));
             }
           } catch {
-            // Use defaults on parse error
+            // Invalid JSON, keep empty array
           }
         }
 
@@ -54,6 +49,8 @@ export const Hero: React.FC<HeroProps> = ({
       }
     } catch {
       console.warn('Failed to load hero settings');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -76,7 +73,7 @@ export const Hero: React.FC<HeroProps> = ({
     setCurrentSlide(index);
   };
 
-const nextSlide = () => {
+  const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroImages.length);
   };
 
@@ -93,6 +90,55 @@ const nextSlide = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [prevSlide, nextSlide]);
+
+  // Show nothing if no images and not loading - admin must configure
+  if (!loading && heroImages.length === 0) {
+    return (
+      <section className="hero-section hero-section--empty">
+        <div className="hero__bg-container">
+          <div className="hero__overlay" />
+        </div>
+        <div className="hero__content">
+          <span className="hero__label">{t('hero.label')}</span>
+          <h1 className="hero__title">{heroTitle || t('hero.title')}</h1>
+          <p className="hero__description">
+            {heroSubtitle || t('hero.description')}
+          </p>
+
+          <div className="hero__actions">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={onShopMen || (() => console.log('Shop Men clicked'))}
+            >
+              {t('hero.shopMen')}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={onShopWomen || (() => console.log('Shop Women clicked'))}
+            >
+              {t('hero.shopWomen')}
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <section className="hero-section">
+        <div className="hero__bg-container">
+          <div className="hero__overlay" />
+        </div>
+        <div className="hero__content">
+          <div className="spinner" style={{ width: '40px', height: '40px', margin: '0 auto' }} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="hero-section">

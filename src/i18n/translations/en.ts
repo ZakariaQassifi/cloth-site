@@ -529,6 +529,8 @@ export const en = {
   'admin.settings.generalTitle': 'General Settings',
   'admin.settings.storeName': 'Store Name',
   'admin.settings.storeNamePlaceholder': 'e.g. KINETIC STUDIO',
+  'admin.settings.brandName': 'Header Brand Name',
+  'admin.settings.brandNamePlaceholder': 'e.g. KINETIC',
   'admin.settings.logoUrl': 'Logo URL',
   'admin.settings.logoUrlPlaceholder': 'https://example.com/logo.png',
   'admin.settings.copyrightText': 'Copyright Text',
@@ -591,6 +593,11 @@ export const en = {
   'admin.settings.heroImageUrlPlaceholder': 'https://example.com/hero-image.jpg',
   'admin.settings.addHeroImage': 'Add Hero Image',
   'admin.settings.removeHeroImage': 'Remove hero image',
+  'admin.settings.uploadHeroImages': 'Upload Hero Images',
+  'admin.settings.uploading': 'Uploading…',
+  'admin.settings.uploadSuccess': 'Images uploaded successfully',
+  'admin.settings.uploadFailed': 'Failed to upload images',
+  'admin.settings.noHeroImages': 'No hero images yet. Upload images to add to the slider.',
 
   // Settings: Footer
   'admin.settings.footerImageUrl': 'Footer Image URL',

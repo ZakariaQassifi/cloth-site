@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [storeName, setStoreName] = useState('KINETIC');
+  const [brandName, setBrandName] = useState('KINETIC');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   // Categories come from the shared catalog so the nav can never drift from
@@ -39,8 +39,8 @@ export const Header: React.FC<HeaderProps> = ({
       const res = await fetchSettings();
       if (res.success && res.data) {
         const data = res.data;
-        if (data.storeName && data.storeName.trim()) {
-          setStoreName(data.storeName);
+        if (data.brandName && data.brandName.trim()) {
+          setBrandName(data.brandName);
         }
         if (data.logoUrl && data.logoUrl.trim()) {
           setLogoUrl(data.logoUrl);
@@ -75,13 +75,13 @@ export const Header: React.FC<HeaderProps> = ({
       return (
         <img
           src={logoUrl}
-          alt={storeName}
+          alt={brandName}
           className="header__logo"
           style={{ height: '36px', width: 'auto', maxWidth: '180px' }}
         />
       );
     }
-    return <span className="header__brand-text">{storeName}</span>;
+    return <span className="header__brand-text">{brandName}</span>;
   };
 
   return (

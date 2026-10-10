@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -193,8 +193,10 @@ model ContactMessage {
 /// Global site configuration (single-row settings store).
 model SiteSettings {
   id            String    @id @default("default")
-  /// Store name displayed in header/footer
+  /// Store name displayed in footer
   storeName     String    @default("KINETIC STUDIO") @map("store_name")
+  /// Brand name displayed in header/navbar (separate from storeName)
+  brandName     String    @default("KINETIC") @map("brand_name")
   /// Logo URL displayed in header
   logoUrl       String?   @map("logo_url")
   /// Copyright text in footer

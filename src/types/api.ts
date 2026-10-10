@@ -153,6 +153,7 @@ export interface CategoryInput {
 export interface SiteSettings {
   id: string;
   storeName: string;
+  brandName: string;
   logoUrl?: string | null;
   copyrightText?: string | null;
   contactEmail?: string | null;
@@ -177,6 +178,7 @@ export interface SiteSettings {
 /** Input for updating site settings. */
 export interface SiteSettingsInput {
   storeName?: string;
+  brandName?: string;
   logoUrl?: string | null;
   copyrightText?: string | null;
   contactEmail?: string | null;

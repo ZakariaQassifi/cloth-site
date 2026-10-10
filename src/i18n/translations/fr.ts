@@ -545,6 +545,8 @@ export const fr: Dictionary = {
   'admin.settings.generalTitle': 'Paramètres généraux',
   'admin.settings.storeName': 'Nom de la boutique',
   'admin.settings.storeNamePlaceholder': 'ex. KINETIC STUDIO',
+  'admin.settings.brandName': 'Nom de marque (Header)',
+  'admin.settings.brandNamePlaceholder': 'ex. KINETIC',
   'admin.settings.logoUrl': 'URL du logo',
   'admin.settings.logoUrlPlaceholder': 'https://exemple.com/logo.png',
   'admin.settings.copyrightText': 'Texte de copyright',
@@ -607,6 +609,11 @@ export const fr: Dictionary = {
   'admin.settings.heroImageUrlPlaceholder': 'https://exemple.com/image-hero.jpg',
   'admin.settings.addHeroImage': 'Ajouter une image Hero',
   'admin.settings.removeHeroImage': 'Supprimer l\'image Hero',
+  'admin.settings.uploadHeroImages': 'Téléverser des images Hero',
+  'admin.settings.uploading': 'Téléversement…',
+  'admin.settings.uploadSuccess': 'Images téléversées avec succès',
+  'admin.settings.uploadFailed': 'Échec du téléversement des images',
+  'admin.settings.noHeroImages': 'Aucune image Hero pour l\'instant. Téléversez des images pour les ajouter au carrousel.',
 
   // Settings: Footer
   'admin.settings.footerImageUrl': 'URL de l\'image du pied de page',

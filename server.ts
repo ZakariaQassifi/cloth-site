@@ -700,6 +700,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
   try {
     const {
       storeName,
+      brandName,
       logoUrl,
       copyrightText,
       contactEmail,
@@ -724,6 +725,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       create: {
         id: 'default',
         storeName: storeName || 'KINETIC STUDIO',
+        brandName: brandName || 'KINETIC',
         logoUrl,
         copyrightText: copyrightText || '© 2026 KINETIC STUDIO. All rights reserved.',
         contactEmail,
@@ -744,6 +746,7 @@ app.put('/api/admin/settings', requireAdmin, async (req: AdminRequest, res: Resp
       },
       update: {
         ...(storeName !== undefined && { storeName }),
+        ...(brandName !== undefined && { brandName }),
         ...(logoUrl !== undefined && { logoUrl }),
         ...(copyrightText !== undefined && { copyrightText }),
         ...(contactEmail !== undefined && { contactEmail }),

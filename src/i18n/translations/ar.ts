@@ -530,6 +530,8 @@ export const ar: Dictionary = {
   'admin.settings.generalTitle': 'الإعدادات العامة',
   'admin.settings.storeName': 'اسم المتجر',
   'admin.settings.storeNamePlaceholder': 'مثال: KINETIC STUDIO',
+  'admin.settings.brandName': 'اسم العلامة التجارية (Header)',
+  'admin.settings.brandNamePlaceholder': 'مثال: KINETIC',
   'admin.settings.logoUrl': 'رابط الشعار (Logo URL)',
   'admin.settings.logoUrlPlaceholder': 'https://example.com/logo.png',
   'admin.settings.copyrightText': 'نص حقوق النشر',
@@ -592,6 +594,11 @@ export const ar: Dictionary = {
   'admin.settings.heroImageUrlPlaceholder': 'https://example.com/hero-image.jpg',
   'admin.settings.addHeroImage': 'إضافة صورة Hero',
   'admin.settings.removeHeroImage': 'إزالة صورة Hero',
+  'admin.settings.uploadHeroImages': 'رفع صور Hero',
+  'admin.settings.uploading': 'جاري الرفع…',
+  'admin.settings.uploadSuccess': 'تم رفع الصور بنجاح',
+  'admin.settings.uploadFailed': 'فشل رفع الصور',
+  'admin.settings.noHeroImages': 'لا توجد صور Hero بعد. ارفع صوراً لإضافتها إلى الشريط المنزلق.',
 
   // Settings: Footer
   'admin.settings.footerImageUrl': 'رابط صورة التذييل',
