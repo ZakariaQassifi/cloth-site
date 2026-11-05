@@ -249,6 +249,10 @@ export const fr: Dictionary = {
   'confirm.orderedProducts': 'Articles commandés ({count})',
   'confirm.itemMeta': 'Qté : {qty} | Taille : {size} | Couleur : {color}',
   'confirm.continueShopping': 'Continuer mes achats',
+  'confirm.printStatus': 'Impression de votre ticket…',
+  'confirm.printDone': 'Ticket prêt',
+  'confirm.receiptThanks': 'Merci pour votre commande !',
+  'confirm.receiptPresent': 'Présentez ce ticket à la livraison — règlement en espèces.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'Contact & Support',

@@ -243,6 +243,10 @@ export const ar: Dictionary = {
   'confirm.orderedProducts': 'المنتجات المطلوبة ({count})',
   'confirm.itemMeta': 'الكمية: {qty} | المقاس: {size} | اللون: {color}',
   'confirm.continueShopping': 'متابعة التسوق',
+  'confirm.printStatus': 'جارٍ طباعة تذكرتك…',
+  'confirm.printDone': 'التذكرة جاهزة',
+  'confirm.receiptThanks': 'شكرًا لطلبك!',
+  'confirm.receiptPresent': 'قدّم هذه التذكرة عند التسليم — يتم الدفع نقدًا.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'اتصل بنا والدعم',

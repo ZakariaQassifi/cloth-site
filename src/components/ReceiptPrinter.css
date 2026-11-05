@@ -1,0 +1,328 @@
+/**
+ * Thermal receipt printer — the machine head and the paper ticket that feeds
+ * out of it when the checkout succeeds.
+ *
+ * Technique: the paper starts fully translated above the printer mouth
+ * (out of the mouth's `overflow: hidden` clip) and slides down to its resting
+ * position, so it appears to feed out of the slit in the machine head.
+ */
+
+.receipt-printer {
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ------------------------------------------------------------- machine head */
+
+.receipt-printer__head {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(180deg, #333338 0%, #232327 55%, #1a1a1d 100%);
+  border: 1px solid #0e0e10;
+  border-radius: 14px 14px 8px 8px;
+  padding: 0.85rem 1.1rem 0.6rem;
+  box-shadow:
+    0 14px 26px -18px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.receipt-printer__hud {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+}
+
+.receipt-printer__brandmark {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+.receipt-printer__led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #eab308;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.7);
+  animation: printer-led-blink 0.9s steps(1) infinite;
+}
+
+.receipt-printer__led--ready {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.55);
+  animation: none;
+}
+
+.receipt-printer__status {
+  margin-inline-start: auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+
+  /* Paper printers only print left-to-right — keep the mono feed text stable
+     even under RTL layouts. */
+  direction: ltr;
+}
+
+.receipt-printer__slot {
+  height: 14px;
+  border-radius: 999px;
+  background: #08080a;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* The paper visually tucks up behind the slit. */
+.receipt-printer__mouth {
+  overflow: hidden;
+  margin-top: -5px;
+  position: relative;
+  z-index: 1;
+}
+
+/* -------------------------------------------------------------- paper feed */
+
+.thermal-receipt {
+  background: linear-gradient(90deg, #f1efe8 0%, #fdfcf9 6%, #fdfcf9 94%, #f1efe8 100%);
+  color: #161513;
+  font-family: 'Courier New', Courier, 'Nimbus Mono PS', monospace;
+  border-radius: 2px;
+  box-shadow:
+    0 22px 38px -22px rgba(0, 0, 0, 0.45),
+    inset 0 8px 18px rgba(0, 0, 0, 0.05);
+  animation: receipt-feed 2.2s cubic-bezier(0.35, 0.45, 0.3, 0.98) 0.5s both;
+  will-change: transform;
+}
+
+/* Micro-shake on an inner wrapper so the feed and the paper jitter compose. */
+.thermal-receipt__shiver {
+  padding: 2rem 1.6rem 1.5rem;
+  animation: receipt-shiver 2.6s steps(10) 0.5s both;
+}
+
+/* Torn bottom edge — a strip of alternating triangles, thermal-cutter style. */
+.thermal-receipt::after {
+  content: '';
+  display: block;
+  height: 7px;
+  margin: 0 -1px -14px;
+  background:
+    linear-gradient(45deg, #fdfcf9 3.5px, transparent 3.5px),
+    linear-gradient(-45deg, #fdfcf9 3.5px, transparent 3.5px);
+  background-size: 7px 7px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+
+@keyframes receipt-feed {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes receipt-shiver {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(0.5px);
+  }
+  40% {
+    transform: translateX(-0.4px) rotate(0.04deg);
+  }
+  60% {
+    transform: translateX(0.4px);
+  }
+  80% {
+    transform: translateX(-0.5px) rotate(-0.04deg);
+  }
+}
+
+@keyframes printer-led-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.25;
+  }
+}
+
+/* ------------------------------------------------------------ ticket styles */
+
+.thermal-receipt__center {
+  text-align: center;
+}
+
+.thermal-receipt__center-block {
+  text-align: center;
+}
+
+.thermal-receipt__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.thermal-receipt__store {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.thermal-receipt__muted {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #6d6a61;
+  margin: 0;
+}
+
+.thermal-receipt__strong {
+  font-weight: 700;
+}
+
+.thermal-receipt__cut {
+  border-top: 1px dashed #b5b0a3;
+  margin: 0.85rem 0;
+}
+
+.thermal-receipt__block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.thermal-receipt__section {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a867a;
+  margin: 0 0 0.15rem;
+}
+
+.thermal-receipt__line {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.thermal-receipt__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.thermal-receipt__row--total {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-top: 2px dashed #161513;
+  padding-top: 0.6rem;
+  margin-top: 0.1rem;
+}
+
+.thermal-receipt__items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.thermal-receipt__item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+}
+
+.thermal-receipt__item-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.thermal-receipt__item-meta {
+  font-size: 0.7rem;
+  color: #6d6a61;
+  margin: 0.15rem 0 0;
+}
+
+.thermal-receipt__thanks {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0.1rem 0 0.35rem;
+}
+
+.thermal-receipt__codes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.4rem;
+}
+
+.thermal-receipt__barcode {
+  width: 86%;
+  height: auto;
+}
+
+.thermal-receipt__code-caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.thermal-receipt__qr {
+  width: 84px;
+  height: 84px;
+  image-rendering: pixelated;
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 480px) {
+  .receipt-printer {
+    max-width: 340px;
+  }
+
+  .thermal-receipt__shiver {
+    padding: 1.6rem 1.1rem 1.2rem;
+  }
+
+  .thermal-receipt__store {
+    font-size: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thermal-receipt,
+  .thermal-receipt__shiver,
+  .receipt-printer__led {
+    animation: none;
+    transform: none;
+  }
+}

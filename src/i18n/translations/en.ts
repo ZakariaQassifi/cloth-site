@@ -242,6 +242,10 @@ export const en = {
   'confirm.orderedProducts': 'Ordered Products ({count})',
   'confirm.itemMeta': 'Qty: {qty} | Size: {size} | Color: {color}',
   'confirm.continueShopping': 'Continue Shopping',
+  'confirm.printStatus': 'Printing your ticket…',
+  'confirm.printDone': 'Ticket ready',
+  'confirm.receiptThanks': 'Thank you for your order!',
+  'confirm.receiptPresent': 'Present this ticket upon delivery — payment is collected in cash.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'Contact & Support',
