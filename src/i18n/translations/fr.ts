@@ -253,6 +253,9 @@ export const fr: Dictionary = {
   'confirm.printDone': 'Ticket prêt',
   'confirm.receiptThanks': 'Merci pour votre commande !',
   'confirm.receiptPresent': 'Présentez ce ticket à la livraison — règlement en espèces.',
+  'confirm.downloadTicket': 'Télécharger votre ticket de commande',
+  'confirm.downloadPreparing': 'Préparation du PDF…',
+  'confirm.downloadError': 'Une erreur est survenue lors de la création du PDF. Veuillez réessayer.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'Contact & Support',

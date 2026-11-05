@@ -3,6 +3,7 @@ import type { Order } from '../data/order';
 import { brandConfig } from '../config/brand';
 import { useTranslation } from '../i18n/useI18n';
 import { useColorLabel, usePaymentLabel } from '../i18n/hooks';
+import { DownloadTicketButton } from './DownloadTicketButton';
 import './ReceiptPrinter.css';
 
 /**
@@ -135,6 +136,7 @@ export const ReceiptPrinter: React.FC<ReceiptPrinterProps> = ({ order }) => {
   const colorLabel = useColorLabel();
   const paymentLabel = usePaymentLabel();
   const [printed, setPrinted] = useState(false);
+  const [ticketNode, setTicketNode] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const id = window.setTimeout(() => setPrinted(true), 2900);
@@ -158,7 +160,7 @@ export const ReceiptPrinter: React.FC<ReceiptPrinterProps> = ({ order }) => {
       </div>
 
       <div className="receipt-printer__mouth">
-        <article className="thermal-receipt">
+        <article ref={setTicketNode} className="thermal-receipt">
           <div className="thermal-receipt__shiver">
             <header className="thermal-receipt__header">
               <p className="thermal-receipt__store">{brandConfig.name}</p>
@@ -262,8 +264,13 @@ export const ReceiptPrinter: React.FC<ReceiptPrinterProps> = ({ order }) => {
               <QrCode value={order.orderId} />
             </div>
           </div>
-        </article>
+      </article>
       </div>
+      {printed && (
+        <div className="receipt-printer__download">
+          <DownloadTicketButton ticketNode={ticketNode} orderNumber={order.orderNumber} />
+        </div>
+      )}
     </div>
   );
 };

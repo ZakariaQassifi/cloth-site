@@ -88,7 +88,27 @@
   z-index: 1;
 }
 
-/* -------------------------------------------------------------- paper feed */
+/* ------------------------------------------------------------ download CTA */
+
+.receipt-printer__download {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.6rem;
+  animation: download-reveal 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes download-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------ paper feed */
 
 .thermal-receipt {
   background: linear-gradient(90deg, #f1efe8 0%, #fdfcf9 6%, #fdfcf9 94%, #f1efe8 100%);
@@ -294,6 +314,7 @@
   letter-spacing: 0.35em;
   font-weight: 700;
   margin: 0;
+  direction: ltr;
 }
 
 .thermal-receipt__qr {
@@ -321,7 +342,8 @@
 @media (prefers-reduced-motion: reduce) {
   .thermal-receipt,
   .thermal-receipt__shiver,
-  .receipt-printer__led {
+  .receipt-printer__led,
+  .receipt-printer__download {
     animation: none;
     transform: none;
   }

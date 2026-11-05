@@ -246,6 +246,9 @@ export const en = {
   'confirm.printDone': 'Ticket ready',
   'confirm.receiptThanks': 'Thank you for your order!',
   'confirm.receiptPresent': 'Present this ticket upon delivery — payment is collected in cash.',
+  'confirm.downloadTicket': 'Download Your Checkout Ticket',
+  'confirm.downloadPreparing': 'Preparing PDF…',
+  'confirm.downloadError': 'Something went wrong while creating the PDF. Please try again.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'Contact & Support',

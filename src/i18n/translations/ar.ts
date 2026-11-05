@@ -247,6 +247,9 @@ export const ar: Dictionary = {
   'confirm.printDone': 'التذكرة جاهزة',
   'confirm.receiptThanks': 'شكرًا لطلبك!',
   'confirm.receiptPresent': 'قدّم هذه التذكرة عند التسليم — يتم الدفع نقدًا.',
+  'confirm.downloadTicket': 'حمّل تذكرة الشراء الخاصة بك',
+  'confirm.downloadPreparing': 'جارٍ إعداد ملف PDF…',
+  'confirm.downloadError': 'حدث خطأ أثناء إنشاء ملف PDF. حاول مرة أخرى.',
 
   // ------------------------------------------------------------ contact
   'contact.title': 'اتصل بنا والدعم',
