@@ -134,6 +134,10 @@ model Order {
   customerNotes  String?     @map("customer_notes")
   subtotalPrice  Float       @map("subtotal_price")
   shippingPrice  Float       @default(0) @map("shipping_price")
+  /// Money off captured at checkout from an applied promo code.
+  discountPrice  Float       @default(0) @map("discount_price")
+  /// The promo code applied at checkout, when one used its discount.
+  promoCode      String?
   totalPrice     Float       @map("total_price")
   status         String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
   paymentMethod  String      @default("CASH_ON_DELIVERY") @map("payment_method") // CASH_ON_DELIVERY only
@@ -188,6 +192,38 @@ model ContactMessage {
   @@index([isRead])
   @@index([createdAt])
   @@map("contact_messages")
+}
+
+/// A promotional discount code managed from the admin dashboard.
+///
+/// Stored as a standalone table rather than embedded in orders so codes can be
+/// reused across orders, retired, and audited. `discountType` is kept as a
+/// String because the SQLite dev schema does not support Prisma enums; the
+/// accepted values are enforced by validation instead.
+model PromoCode {
+  id          String    @id @default(uuid())
+  /// Shoppers type this into checkout. Normalised to upper-case on write.
+  code             String         @unique
+  /// "PERCENTAGE" (discountValue is a %) or "FIXED" (discountValue is an amount).
+  discountType     String         @default("PERCENTAGE")
+  /// Percentage (0-100) or absolute money off, depending on `discountType`.
+  discountValue    Float
+  /// Minimum number of item units in the cart for the code to be applicable.
+  minProductsCount Int            @default(1)   @map("min_products_count")
+  /// Maximum number of times the code can be used; null = unlimited.
+  usageLimit       Int?           @map("usage_limit")
+  /// Times the code has actually been applied to a confirmed order.
+  usedCount        Int            @default(0)   @map("used_count")
+  /// Master switch; inactive codes fail validation even if not yet expired.
+  isActive         Boolean        @default(true) @map("is_active")
+  /// Time after which the code stops working; null = never expires.
+  expiresAt        DateTime?      @map("expires_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@index([expiresAt])
+  @@map("promo_codes")
 }
 
 /// Global site configuration (single-row settings store).

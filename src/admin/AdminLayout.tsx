@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Package, Tag, ShoppingCart, Users, Settings, Menu, X, ArrowLeft, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, ShoppingCart, Users, Settings, Menu, X, ArrowLeft, LogOut, TicketPercent } from 'lucide-react';
 import {
   adminDeleteProduct,
   adminFetchStats,
@@ -17,6 +17,7 @@ import { AdminOrders } from './AdminOrders';
 import { AdminOrderDetailsModal } from './AdminOrderDetailsModal';
 import { AdminLogin } from './AdminLogin';
 import { AdminSettings } from './AdminSettings';
+import { AdminPromoCodes } from './AdminPromoCodes';
 import { clearAdminSession, useAdminToken } from './adminAuth';
 import { ADMIN_LOGIN_PATH, navigate } from '../routing/routes';
 import type { AdminOrder, AdminProduct, AdminStats, OrderStatus } from '../types/api';
@@ -28,6 +29,7 @@ const ADMIN_TAB_KEYS: Record<AdminTab, TranslationKey> = {
   dashboard: 'admin.nav.dashboard',
   products: 'admin.nav.products',
   categories: 'admin.nav.categories',
+  promos: 'admin.nav.promos',
   orders: 'admin.nav.orders',
   customers: 'admin.nav.customers',
   settings: 'admin.nav.settings',
@@ -39,7 +41,7 @@ export interface AdminLayoutProps {
   loginMode?: boolean;
 }
 
-type AdminTab = 'dashboard' | 'products' | 'categories' | 'orders' | 'customers' | 'settings';
+type AdminTab = 'dashboard' | 'products' | 'categories' | 'promos' | 'orders' | 'customers' | 'settings';
 
 /** Authentication status of the dashboard shell. */
 type AuthPhase = 'checking' | 'authenticated' | 'anonymous';
@@ -303,6 +305,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
           <button
             type="button"
             className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
+              activeTab === 'promos'
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+            onClick={() => { setActiveTab('promos'); setProductViewMode('list'); setSidebarOpen(false); }}
+          >
+            <TicketPercent size={18} /> {t('admin.nav.promos')}
+          </button>
+          <button
+            type="button"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full ${
               activeTab === 'orders'
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
@@ -417,6 +430,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onReturnToStore, login
               {activeTab === 'categories' && (
                 <AdminCategories categories={statsData.categories} onRefresh={applyStats} />
               )}
+              {activeTab === 'promos' && <AdminPromoCodes />}
               {activeTab === 'orders' && (
                 <AdminOrders
                   orders={statsData.orders}

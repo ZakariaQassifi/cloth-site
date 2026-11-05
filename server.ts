@@ -16,7 +16,7 @@ import { warnIfUnconfigured } from './server/emailConfig';
 import { assertSigningSecretIsSafe } from './server/adminAuth';
 import { configureDatabase, prisma } from './server/db';
 import { hashPassword } from './server/adminPassword';
-import { LIMITS, isShortText, validateOrderCustomer, validateOrderItems, validateDisplayOrder } from './server/validation';
+import { LIMITS, isShortText, validateOrderCustomer, validateOrderItems, validateDisplayOrder, validatePromoCode } from './server/validation';
 import { rateLimit } from './server/rateLimit';
 import {
   InsufficientStockError,
@@ -1128,6 +1128,158 @@ app.delete('/api/products/:id', requireAdmin, async (req: AdminRequest, res: Res
 
     await prisma.product.delete({ where: { id } });
     return sendResponse(res, 200, true, 'Product deleted successfully');
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ----------------------------------------------------
+// PROMO CODES API (admin)
+// ----------------------------------------------------
+
+/** Normalise a shopper/admin-typed code: trimmed and case-insensitive. */
+const normalizePromoCode = (value: unknown): string =>
+  typeof value === 'string' ? value.trim().toUpperCase() : '';
+
+/** Shape the database row for the dashboard (dates as ISO strings). */
+const serializePromoCode = (promo: {
+  id: string;
+  code: string;
+  discountType: string;
+  discountValue: number;
+  minProductsCount: number;
+  usageLimit: number | null;
+  usedCount: number;
+  isActive: boolean;
+  expiresAt: Date | null;
+  createdAt: Date;
+}) => ({
+  ...promo,
+  expiresAt: promo.expiresAt ? promo.expiresAt.toISOString() : null,
+  createdAt: promo.createdAt.toISOString(),
+});
+
+app.get('/api/admin/promo-codes', requireAdmin, async (_req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const promos = await prisma.promoCode.findMany({ orderBy: { createdAt: 'desc' } });
+    return sendResponse(res, 200, true, 'Promo codes fetched successfully', promos.map(serializePromoCode));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/admin/promo-codes', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const { code, discountType, discountValue, minProductsCount, usageLimit, isActive, expiresAt } =
+      req.body ?? {};
+
+    const validationError = validatePromoCode({
+      code,
+      discountType,
+      discountValue,
+      minProductsCount,
+      usageLimit,
+      expiresAt,
+    });
+    if (validationError) {
+      return sendResponse(res, 400, false, validationError);
+    }
+
+    const normalized = normalizePromoCode(code);
+    const duplicate = await prisma.promoCode.findUnique({ where: { code: normalized } });
+    if (duplicate) {
+      return sendResponse(res, 409, false, `Promo code "${normalized}" already exists`);
+    }
+
+    const promo = await prisma.promoCode.create({
+      data: {
+        code: normalized,
+        discountType: discountType as string,
+        discountValue: Number(discountValue),
+        minProductsCount: minProductsCount === undefined || minProductsCount === null
+          ? 1
+          : Number(minProductsCount),
+        ...(usageLimit !== undefined && usageLimit !== null && usageLimit !== ''
+          ? { usageLimit: Number(usageLimit) }
+          : {}),
+        isActive: isActive !== undefined ? Boolean(isActive) : true,
+        ...(expiresAt !== undefined && expiresAt !== null && expiresAt !== ''
+          ? { expiresAt: new Date(String(expiresAt)) }
+          : {}),
+      },
+    });
+    return sendResponse(res, 201, true, 'Promo code created successfully', serializePromoCode(promo));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.put('/api/admin/promo-codes/:id', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const id = routeParam(req.params.id);
+    const existing = await prisma.promoCode.findUnique({ where: { id } });
+    if (!existing) {
+      return sendResponse(res, 404, false, 'Promo code not found');
+    }
+
+    const { code, discountType, discountValue, minProductsCount, usageLimit, isActive, expiresAt } =
+      req.body ?? {};
+
+    // Only validate the fields actually present, and require the code to be
+    // unique against every other row (not just this one).
+    const validationError = validatePromoCode({
+      code: code ?? existing.code,
+      discountType: discountType ?? existing.discountType,
+      discountValue: discountValue ?? existing.discountValue,
+      minProductsCount: minProductsCount ?? existing.minProductsCount,
+      usageLimit: usageLimit ?? existing.usageLimit,
+      expiresAt: expiresAt ?? existing.expiresAt,
+    });
+    if (validationError) {
+      return sendResponse(res, 400, false, validationError);
+    }
+
+    if (code !== undefined && normalizePromoCode(code) !== existing.code) {
+      const duplicate = await prisma.promoCode.findUnique({ where: { code: normalizePromoCode(code) } });
+      if (duplicate) {
+        return sendResponse(res, 409, false, `Promo code "${normalizePromoCode(code)}" already exists`);
+      }
+    }
+
+    const promo = await prisma.promoCode.update({
+      where: { id },
+      data: {
+        ...(code !== undefined && { code: normalizePromoCode(code) }),
+        ...(discountType !== undefined && { discountType: String(discountType) }),
+        ...(discountValue !== undefined && { discountValue: Number(discountValue) }),
+        ...(minProductsCount !== undefined && { minProductsCount: Number(minProductsCount) }),
+        // The UI clears the limits via `null`, which must write back to null.
+        ...(usageLimit !== undefined && {
+          usageLimit:
+            usageLimit === null || usageLimit === '' ? null : Number(usageLimit),
+        }),
+        ...(isActive !== undefined && { isActive: Boolean(isActive) }),
+        ...(expiresAt !== undefined && {
+          expiresAt: expiresAt === null || expiresAt === '' ? null : new Date(String(expiresAt)),
+        }),
+      },
+    });
+    return sendResponse(res, 200, true, 'Promo code updated successfully', serializePromoCode(promo));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete('/api/admin/promo-codes/:id', requireAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const id = routeParam(req.params.id);
+    const existing = await prisma.promoCode.findUnique({ where: { id } });
+    if (!existing) {
+      return sendResponse(res, 404, false, 'Promo code not found');
+    }
+
+    await prisma.promoCode.delete({ where: { id } });
+    return sendResponse(res, 200, true, 'Promo code deleted successfully');
   } catch (error) {
     next(error);
   }

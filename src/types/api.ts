@@ -149,6 +149,41 @@ export interface CategoryInput {
   displayOrder?: number;
 }
 
+/** Discount behaviour a promo code applies. */
+export type PromoDiscountType = 'PERCENTAGE' | 'FIXED';
+
+/** Promo code as surfaced to the admin dashboard. */
+export interface PromoCode {
+  id: string;
+  /** Shoppers type this into checkout; stored upper-case. */
+  code: string;
+  discountType: PromoDiscountType;
+  /** Percentage (0-100) or absolute money off, per `discountType`. */
+  discountValue: number;
+  /** Minimum item units in the cart for the code to be applicable. */
+  minProductsCount: number;
+  /** Max uses; null = unlimited. */
+  usageLimit: number | null;
+  usedCount: number;
+  isActive: boolean;
+  /** ISO timestamp, or null when the code never expires. */
+  expiresAt: string | null;
+  createdAt?: string;
+}
+
+/** Payload the admin dashboard sends to create or update a promo code. */
+export interface PromoCodeInput {
+  code: string;
+  discountType: PromoDiscountType;
+  discountValue: number;
+  minProductsCount: number;
+  /** Omit/null for unlimited uses. */
+  usageLimit?: number | null;
+  isActive?: boolean;
+  /** ISO timestamp, or null for no expiry. */
+  expiresAt?: string | null;
+}
+
 /** Global site settings as consumed by the storefront and admin. */
 export interface SiteSettings {
   id: string;

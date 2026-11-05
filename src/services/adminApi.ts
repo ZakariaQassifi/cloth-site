@@ -11,6 +11,8 @@ import type {
   Category,
   CategoryInput,
   ProductInput,
+  PromoCode,
+  PromoCodeInput,
   SiteSettings,
   SiteSettingsInput,
 } from '../types/api';
@@ -132,6 +134,27 @@ export function adminUpdateCategory(
 
 export function adminDeleteCategory(id: string): Promise<ApiResult<null>> {
   return adminRequest<null>(`/categories/${id}`, { method: 'DELETE' });
+}
+
+// ---------------------------------------------------- promo codes
+
+export function adminFetchPromoCodes(): Promise<ApiResult<PromoCode[]>> {
+  return adminRequest<PromoCode[]>('/admin/promo-codes');
+}
+
+export function adminCreatePromoCode(input: PromoCodeInput): Promise<ApiResult<PromoCode>> {
+  return adminRequest<PromoCode>('/admin/promo-codes', { method: 'POST', body: input });
+}
+
+export function adminUpdatePromoCode(
+  id: string,
+  input: Partial<PromoCodeInput>
+): Promise<ApiResult<PromoCode>> {
+  return adminRequest<PromoCode>(`/admin/promo-codes/${id}`, { method: 'PUT', body: input });
+}
+
+export function adminDeletePromoCode(id: string): Promise<ApiResult<null>> {
+  return adminRequest<null>(`/admin/promo-codes/${id}`, { method: 'DELETE' });
 }
 
 export function adminUpdateOrderStatus(id: string, status: string): Promise<ApiResult<AdminOrder>> {

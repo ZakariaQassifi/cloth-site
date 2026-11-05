@@ -118,6 +118,76 @@ export function validateOrderItems(items: unknown): string | null {
   return null;
 }
 
+/**
+ * Upper bound on the money off a FIXED promo code, far above any realistic
+ * order total, and on the counts an admin may type for promo rules.
+ */
+const MAX_PROMO_DISCOUNT_VALUE = 1_000_000;
+const MAX_PROMO_MIN_PRODUCTS = 1000;
+const MAX_PROMO_USAGE_LIMIT = 100_000;
+
+/** Absolute max accepted discount amount for a FIXED code. */
+export const PROMO_DISCOUNT_TYPES = ['PERCENTAGE', 'FIXED'] as const;
+export type PromoDiscountType = (typeof PROMO_DISCOUNT_TYPES)[number];
+
+/** True when the string is one of the accepted discount type keys. */
+export function isPromoDiscountType(value: unknown): value is PromoDiscountType {
+  return value === 'PERCENTAGE' || value === 'FIXED';
+}
+
+/**
+ * Validates a promo code payload (create or update).
+ *
+ * Returns null when the payload is usable; otherwise a client-facing reason
+ * string for the 400 response, following the `validateOrder*` pattern above.
+ */
+export function validatePromoCode(input: {
+  code?: unknown;
+  discountType?: unknown;
+  discountValue?: unknown;
+  minProductsCount?: unknown;
+  usageLimit?: unknown;
+  expiresAt?: unknown;
+}): string | null {
+  if (!isShortText(input.code, 32)) return 'A promo code is required';
+  if (/[\s]/.test(input.code.trim())) return 'A promo code cannot contain spaces';
+  if (!/^[A-Za-z0-9-]+$/.test(input.code.trim())) {
+    return 'A promo code may only contain letters, numbers and dashes';
+  }
+  if (!isPromoDiscountType(input.discountType)) {
+    return 'Discount type must be PERCENTAGE or FIXED';
+  }
+
+  const value = Number(input.discountValue);
+  if (!Number.isFinite(value) || value <= 0 || value > MAX_PROMO_DISCOUNT_VALUE) {
+    return 'Discount value must be a positive number';
+  }
+  if (input.discountType === 'PERCENTAGE' && value > 100) {
+    return 'A percentage discount cannot exceed 100%';
+  }
+
+  const rawMin = input.minProductsCount === undefined || input.minProductsCount === null
+    ? 1
+    : Number(input.minProductsCount);
+  if (!Number.isInteger(rawMin) || rawMin < 1 || rawMin > MAX_PROMO_MIN_PRODUCTS) {
+    return 'Minimum product count must be a whole number of at least 1';
+  }
+
+  if (input.usageLimit !== undefined && input.usageLimit !== null && input.usageLimit !== '') {
+    const limit = Number(input.usageLimit);
+    if (!Number.isInteger(limit) || limit < 1 || limit > MAX_PROMO_USAGE_LIMIT) {
+      return 'Usage limit must be a whole number of at least 1';
+    }
+  }
+
+  if (input.expiresAt !== undefined && input.expiresAt !== null && input.expiresAt !== '') {
+    const date = new Date(String(input.expiresAt));
+    if (Number.isNaN(date.getTime())) return 'Expiry date is invalid';
+  }
+
+  return null;
+}
+
 export const LIMITS = {
   MAX_SHORT_TEXT,
   MAX_LONG_TEXT,
